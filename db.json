@@ -1,0 +1,22 @@
+{ 
+    "rooms": {
+        "kitchen": {
+            "id": "kitchen",
+            "name": "The Kitchen",
+            "description": "You find yourself in a kitchen",
+            "exits": {
+                "west": "livingRoom",
+                "south": "observatory"
+            },
+            "contents": ["crumpled-paper"]
+            
+        }
+    },
+    "items": {
+        "crumpled-paper": {
+            "id": "crumpled-paper",
+            "name": "Crumpled Paper",
+            "description": "The text is too small to read"
+        }
+    }
+}
