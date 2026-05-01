@@ -121,3 +121,333 @@
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 1.2em;
 }
+
+/* ================================================================
+   Dialog System (Backlog Items #4 + #5)
+   Owner: Subramanian, Abhishek
+   ================================================================ */
+
+.dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(8, 12, 8, 0.78);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 2em;
+}
+
+.dialog-box {
+    background-color: #1a1a1a;
+    color: #f4e9d0;
+    border: 0.15em solid #c9a45c;
+    border-radius: 0.6em;
+    box-shadow: 0 0 2em rgba(201, 164, 92, 0.35);
+    width: min(640px, 100%);
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75em 1em;
+    border-bottom: 1px solid #4a3d24;
+    background-color: #0f0f0f;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+
+.dialog-npc-name {
+    font-weight: bold;
+    font-size: 1.15em;
+    color: #ffd789;
+    letter-spacing: 0.04em;
+}
+
+.dialog-close {
+    background: transparent;
+    color: #f4e9d0;
+    border: 1px solid #4a3d24;
+    border-radius: 0.3em;
+    width: 1.8em;
+    height: 1.8em;
+    font-size: 1.1em;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.dialog-close:hover {
+    background-color: #2a2418;
+    color: #ffd789;
+    border-color: #c9a45c;
+}
+
+.dialog-speech {
+    padding: 1.25em 1.25em 0.75em 1.25em;
+    font-size: 1.05em;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 4em;
+    font-style: italic;
+}
+
+.dialog-responses {
+    padding: 0.5em 1em 1em 1em;
+    border-top: 1px solid #4a3d24;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    background-color: #131311;
+    border-bottom-left-radius: 0.5em;
+    border-bottom-right-radius: 0.5em;
+}
+
+.dialog-choice-btn {
+    background-color: #2a2418;
+    color: #f4e9d0;
+    border: 1px solid #6b5836;
+    border-radius: 0.35em;
+    padding: 0.7em 0.9em;
+    font-size: 1em;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: rgba(201, 164, 92, 0.6);
+    text-underline-offset: 3px;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.dialog-choice-btn:hover {
+    background-color: #3d3220;
+    border-color: #c9a45c;
+    color: #ffd789;
+}
+
+.dialog-choice-btn:focus-visible {
+    outline: 2px solid #c9a45c;
+    outline-offset: 2px;
+}
+
+.dialog-leave-btn {
+    margin-top: 0.4em;
+    color: #b8a888;
+    font-style: italic;
+}
+
+.dialog-input-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+}
+
+.dialog-input-label {
+    font-size: 0.95em;
+    color: #b8a888;
+}
+
+.dialog-input-row {
+    display: flex;
+    gap: 0.5em;
+}
+
+.dialog-input {
+    flex: 1;
+    padding: 0.6em 0.75em;
+    font-size: 1em;
+    font-family: inherit;
+    background-color: #0d0d0d;
+    color: #f4e9d0;
+    border: 1px solid #6b5836;
+    border-radius: 0.35em;
+}
+
+.dialog-input:focus {
+    outline: none;
+    border-color: #c9a45c;
+    box-shadow: 0 0 0 2px rgba(201, 164, 92, 0.3);
+}
+
+.dialog-submit-btn {
+    background-color: #c9a45c;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 0.35em;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.dialog-submit-btn:hover {
+    background-color: #ffd789;
+}
+
+/* ================================================================
+   Quest System (Backlog Item #13)
+   Owner: Subramanian, Abhishek
+   ================================================================ */
+
+.quest-log {
+    position: fixed;
+    top: 1em;
+    right: 1em;
+    width: 280px;
+    background-color: #1a1a1a;
+    color: #f4e9d0;
+    border: 0.12em solid #c9a45c;
+    border-radius: 0.5em;
+    box-shadow: 0 0.4em 1.2em rgba(0, 0, 0, 0.45);
+    z-index: 900;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 0.95em;
+}
+
+.quest-log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em 0.75em;
+    border-bottom: 1px solid #4a3d24;
+    background-color: #0f0f0f;
+    border-top-left-radius: 0.4em;
+    border-top-right-radius: 0.4em;
+}
+
+.quest-log-title {
+    font-weight: bold;
+    color: #ffd789;
+    letter-spacing: 0.05em;
+}
+
+.quest-log-toggle {
+    background: transparent;
+    color: #f4e9d0;
+    border: 1px solid #4a3d24;
+    border-radius: 0.3em;
+    width: 1.7em;
+    height: 1.7em;
+    font-size: 1em;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.quest-log-toggle:hover {
+    background-color: #2a2418;
+    color: #ffd789;
+    border-color: #c9a45c;
+}
+
+.quest-log-body {
+    padding: 0.6em 0.75em;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.quest-log.collapsed .quest-log-body {
+    display: none;
+}
+
+.quest-log-empty {
+    color: #888;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.quest-log-section {
+    font-size: 0.75em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #c9a45c;
+    margin: 0.5em 0 0.3em 0;
+    border-bottom: 1px dashed #4a3d24;
+    padding-bottom: 0.2em;
+}
+
+.quest-log-section:first-child {
+    margin-top: 0;
+}
+
+.quest-entry {
+    padding: 0.5em 0;
+    border-bottom: 1px dashed #2a2418;
+}
+
+.quest-entry:last-child {
+    border-bottom: none;
+}
+
+.quest-entry-title {
+    font-weight: bold;
+    color: #f4e9d0;
+    margin-bottom: 0.15em;
+}
+
+.quest-entry-stage {
+    font-size: 0.9em;
+    color: #b8a888;
+    line-height: 1.4;
+}
+
+.quest-entry-complete .quest-entry-title {
+    color: #6b6b6b;
+    text-decoration: line-through;
+}
+
+.quest-entry-complete .quest-entry-stage {
+    color: #555;
+}
+
+/* ================================================================
+   Dev demo bar (test trigger for the dialog/quest systems)
+   ================================================================ */
+
+.dev-demo-bar {
+    margin-top: 2em;
+    padding: 0.75em 1em;
+    background-color: #1a1a1a;
+    color: #f4e9d0;
+    border: 1px dashed #6b5836;
+    border-radius: 0.4em;
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.dev-demo-label {
+    font-size: 0.75em;
+    font-weight: bold;
+    color: #c9a45c;
+    letter-spacing: 0.1em;
+}
+
+.dev-demo-btn {
+    background-color: #2a2418;
+    color: #f4e9d0;
+    border: 1px solid #6b5836;
+    border-radius: 0.35em;
+    padding: 0.5em 1em;
+    font-size: 0.95em;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.dev-demo-btn:hover {
+    background-color: #3d3220;
+    border-color: #c9a45c;
+    color: #ffd789;
+}
+
+.dev-demo-btn-secondary {
+    background-color: transparent;
+}

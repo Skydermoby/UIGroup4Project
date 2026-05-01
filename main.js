@@ -420,4 +420,192 @@ async function init() {
     
     render();
 }
-init()
+init().then(setupDialogAndQuestDemo).catch(function (err) {
+    console.error("Init failed:", err);
+    setupDialogAndQuestDemo(); // systems run standalone even if world fails
+});
+
+
+// ============================================================
+// Dialog + Quest wiring (Backlog #4, #5, #13)
+// Owner: Abhishek Subramanian
+// Instantiates the systems on `world` and binds the demo trigger.
+// ============================================================
+
+const DEMO_QUEST_ID = "demo-long-necked-man";
+const DEMO_NPC = { id: "long_necked_man", name: "Long-Necked Man" };
+
+function defineDemoQuest() {
+    world.quests.defineQuest({
+        id: DEMO_QUEST_ID,
+        title: "The Long-Necked Man",
+        description: "A pale figure in the clearing seems to want something from you.",
+        stages: [
+            { id: "met",           description: "Spoke to the Long-Necked Man." },
+            { id: "find_apple",    description: "Find an apple to bring back to him." },
+            { id: "path_revealed", description: "He pointed you toward the southern glow." }
+        ]
+    });
+}
+
+function setupDialogAndQuestDemo() {
+    world.dialog = new DialogSystem(world);
+    world.quests = new QuestSystem(world);
+    defineDemoQuest();
+
+    // Dev logging so integrators can see the events their hooks will receive
+    world.dialog.on("onResponse", (p) => console.log("[dialog] response:", p));
+    world.quests.on("onStageChange", (p) => console.log("[quest] stage change:", p.quest.id, "->", p.stage));
+    world.quests.on("onQuestComplete", (p) => console.log("[quest] complete:", p.quest.id));
+
+    const demoBtn = document.getElementById("dialog-demo-btn");
+    if (demoBtn) demoBtn.addEventListener("click", openLongNeckedManDialog);
+
+    const resetBtn = document.getElementById("quest-demo-reset-btn");
+    if (resetBtn) resetBtn.addEventListener("click", function () {
+        defineDemoQuest();
+        console.log("[quest] demo quest reset");
+    });
+}
+
+
+// ============================================================
+// Demo dialog flow (Long-Necked Man)
+// Owner: Abhishek Subramanian
+// Exercises every dialog primitive: say, multi-choice, free-text,
+// gated choices, leave, and quest stage advancement.
+// Other team members can replace this with real game content.
+// ============================================================
+
+function openLongNeckedManDialog() {
+    world.dialog.startDialog(DEMO_NPC);
+
+    // Branch by quest stage (first-meeting / mid-quest / post-completion pools)
+    const stage = world.quests.getStage(DEMO_QUEST_ID);
+    const stageId = stage ? stage.id : null;
+
+    if (world.quests.isComplete(DEMO_QUEST_ID))   scenePostQuest();
+    else if (stageId === "find_apple")            sceneMidQuest();
+    else                                          sceneFirstMeeting();
+}
+
+function sceneFirstMeeting() {
+    world.dialog.say("Well, well... and who might you be, little one?");
+    world.dialog.setChoices([
+        { label: "I... I don't remember.",                    value: "forgot" },
+        { label: "Can you tell me where the next campfire is?", value: "ask_path" }
+    ], function (value) {
+        if (value === "forgot")   sceneRiddle();
+        if (value === "ask_path") sceneApplePath();
+    });
+    world.dialog.addLeaveOption();
+}
+
+const RIDDLE_ANSWERS = ["name", "my name", "your name", "a name"];
+const isRiddleCorrect = (answer) => RIDDLE_ANSWERS.includes(answer.toLowerCase().trim());
+
+function sceneRiddle() {
+    world.dialog.say(
+        "A traveler without a name. How quaint. Perhaps a riddle will jog your memory:\n" +
+        "What do you have that others use more than you do?"
+    );
+    world.dialog.setFreeTextInput("Type your answer", handleRiddleAnswer);
+}
+
+function sceneRiddleRetry() {
+    world.dialog.say("No, no... think harder. What do you have that others use more than you do?");
+    world.dialog.setFreeTextInput("Try again", handleRiddleAnswer);
+}
+
+function handleRiddleAnswer(answer) {
+    if (!isRiddleCorrect(answer)) { sceneRiddleRetry(); return; }
+    if (!world.quests.isActive(DEMO_QUEST_ID) && !world.quests.isComplete(DEMO_QUEST_ID)) {
+        world.quests.startQuest(DEMO_QUEST_ID);
+    }
+    world.quests.setStage(DEMO_QUEST_ID, "path_revealed");
+    sceneRiddleSolved();
+}
+
+function sceneRiddleSolved() {
+    world.dialog.say(
+        "Clever little one. The path south is yours. " +
+        "I saw a warm glow coming from down that way. Say hello to it for me, would you?"
+    );
+    world.dialog.setChoices([
+        { label: "Thank you. I'll be on my way.", value: "thanks" },
+        { label: "What do you mean?",             value: "clarify" }
+    ], function (value) {
+        const reply = (value === "clarify")
+            ? "Look for the lantern to guide your way, child."
+            : "Cautious travels.";
+        world.dialog.say(reply);
+        world.dialog.setChoices([], null);
+        world.dialog.addLeaveOption("Goodbye");
+    });
+}
+
+function sceneApplePath() {
+    world.dialog.say(
+        "Of course. But I'd appreciate a small favor first - it has been so long since I tasted an apple. " +
+        "Bring me one, and I'll tell you everything."
+    );
+    if (!world.quests.isActive(DEMO_QUEST_ID) && !world.quests.isComplete(DEMO_QUEST_ID)) {
+        world.quests.startQuest(DEMO_QUEST_ID);
+    }
+    world.quests.setStage(DEMO_QUEST_ID, "find_apple");
+
+    world.dialog.setChoices([
+        { label: "I'll find you one.", value: "agree" }
+    ], function () {
+        world.dialog.say("Wonderful. I'll be waiting right here.");
+        world.dialog.setChoices([], null);
+        world.dialog.addLeaveOption();
+    });
+    world.dialog.addLeaveOption();
+}
+
+function sceneMidQuest() {
+    world.dialog.say("Have you brought me an apple, little wanderer?");
+    world.dialog.setChoices([
+        { label: "Not yet. I'm still looking.", value: "not_yet" },
+        // Inventory-gated: hidden when player has no apple (per spec)
+        {
+            label: "Here, I brought you an apple.",
+            value: "give_apple",
+            condition: (world) => playerHasItem(world, "apple")
+        }
+    ], function (value) {
+        if (value === "give_apple") {
+            consumePlayerItem(world, "apple");
+            world.quests.setStage(DEMO_QUEST_ID, "path_revealed");
+            world.dialog.say(
+                "Thank you, my friend. A deal is a deal: there is a warm glow to the south. " +
+                "Say hello to it for me, would you?"
+            );
+        } else {
+            world.dialog.say("Take your time. I'm not going anywhere.");
+        }
+        world.dialog.setChoices([], null);
+        world.dialog.addLeaveOption(value === "give_apple" ? "Goodbye" : "Leave");
+    });
+}
+
+function scenePostQuest() {
+    world.dialog.say("Safe travels, little wanderer. The path south remains open.");
+    world.dialog.setChoices([], null);
+    world.dialog.addLeaveOption("Farewell");
+}
+
+// Inventory helpers (placeholder until #7 lands a canonical inventory API)
+function playerHasItem(world, itemId) {
+    if (!world.player || !Array.isArray(world.player.contents)) return false;
+    return world.player.contents.some((item) => item && item.id === itemId);
+}
+
+function consumePlayerItem(world, itemId) {
+    if (!world.player || !Array.isArray(world.player.contents)) return;
+    const idx = world.player.contents.findIndex((item) => item && item.id === itemId);
+    if (idx === -1) return;
+    world.player.contents.splice(idx, 1);
+    if (typeof renderInventory === "function") renderInventory();
+}
