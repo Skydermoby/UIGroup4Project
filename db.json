@@ -25,7 +25,7 @@
             "locks": {
                 "observatory": "Swim"
             },
-            "contents": ["knife", "tupperware", "lantern", "blueFirstHalfKey", "blueSecondHalfKey", "divingSuit"],
+            "contents": ["knife", "tupperware", "lantern", "blueFirstHalfKey", "blueSecondHalfKey", "divingSuit", "campfire"],
             "trait": "None"
         },
         "observatory": {
@@ -156,6 +156,13 @@
             "description": "Seems like you can just play this, nice",
             "trait": "Quest",
             "Addendum": "musicFile.wav"
+        },
+        "campfire": {
+            "id": "campfire",
+            "name": "Campfire",
+            "description": "It's a warm campfire",
+            "trait": "Campfire",
+            "Addendum": "None"
         }
     }
 }

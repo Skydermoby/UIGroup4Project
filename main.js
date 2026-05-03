@@ -340,6 +340,15 @@ function createItemButton(item) {
 
         hoverMenu.appendChild(stuckButton);
     }
+    else if (item.trait == "Campfire") {
+        const cfButton = document.createElement("button");
+        cfButton.type = "button";
+        cfButton.className = "dropdown-action";
+        cfButton.textContent = "Refuel";
+        cfButton.addEventListener("click", function (){useCampfire(); handleOffClick()});
+
+        hoverMenu.appendChild(cfButton);
+    }
     else {
         const takeButton = document.createElement("button");
         takeButton.type = "button";
@@ -631,6 +640,11 @@ function useLantern(item) {
         messageAreaEl.textContent = "You used the " + item.name + ", it is now off";
     }
     render()
+}
+
+function useCampfire() {
+    messageAreaEl.textContent = "You used the campfire, lantern fuel restored";
+    setLanternLevel(100)
 }
 
 function useTool(item) {
