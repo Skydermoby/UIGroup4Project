@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>It Sees - Team 04</title>
+    <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <audio id="room-audio">
+        <source src="FALLEN DOWN.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
     <h3 id="room-name" class="room-name"></h3>
     <div id="room-desc" class="room-desc"></div>
     <div id="room-contents" class="room-contents"></div>
@@ -18,22 +22,9 @@
         </div>
         <button id="east-button" class="button"></button>
     </div>
+    <progress id="lantern-level" class="lantern-level" max="100"></progress>
     <div id="message-area" class="message-area"></div>
     <div id="inventory-contents" class="inventory-contents"></div>
-
-    <!-- Dialog + Quest demo trigger (Subramanian, Abhishek - Items #4, #5, #13) -->
-    <div id="dev-demo-bar" class="dev-demo-bar">
-        <span class="dev-demo-label">[DEV]</span>
-        <button id="dialog-demo-btn" type="button" class="dev-demo-btn">
-            Talk to Long-Necked Man (demo)
-        </button>
-        <button id="quest-demo-reset-btn" type="button" class="dev-demo-btn dev-demo-btn-secondary">
-            Reset demo quest
-        </button>
-    </div>
-
-    <script src="dialogSystem.js"></script>
-    <script src="questSystem.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
