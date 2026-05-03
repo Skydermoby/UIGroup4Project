@@ -1,157 +1,22 @@
 { 
     "rooms": {
-        "livingRoom": {
-            "id": "livingRoom",
-            "name": "The \"Living\" Room",
-            "description": "You perceive a room of red pulsating walls and a relentless odor, the realization hits you the same time it's eyes turn to look at you",
-            "exits": {
-                "east": "kitchen",
-                "west": "redRoom"
-            },
-            "locks": ["redRoom"],
-            "contents": ["flesh-cube", "poop"],
-            "trait": "Dark"
-        },
         "kitchen": {
             "id": "kitchen",
             "name": "The Kitchen",
-            "description": "You find yourself in a kitchen. Why? You hungry or something? Not like we have anything...",
+            "description": "You find yourself in a kitchen",
             "exits": {
                 "west": "livingRoom",
                 "south": "observatory"
             },
-            "locks": [],
-            "contents": ["knife", "tupperware", "lantern", "blueFirstHalfKey", "blueSecondHalfKey"],
-            "trait": "None"
-        },
-        "observatory": {
-            "id": "observatory",
-            "name": "The Observatory",
-            "description": "There's a man here, he seems to be staring into a box with a microscope. \"come lad! You must see this!\" Instead you decided to look up, there's a giant eyeball staring down at you",
-            "exits": {
-                "north": "kitchen"
-            },
-            "locks": [],
-            "contents": ["potatoe", "crumpled-paper", "redKey"],
-            "trait": "Dark"
-        },
-        "redRoom": {
-            "id": "redRoom",
-            "name": "The RED Room",
-            "description":"Photos of a red skeleton hang above bowls of solution. Is it the monster or the victim, it's hard to say",
-            "exits": {
-                "east": "livingRoom"
-            },
-            "locks": [],
-            "contents": ["musicDisc"],
-            "trait": "Dark"
+            "contents": ["crumpled-paper"]
+            
         }
     },
     "items": {
-        "flesh-cube": {
-            "id": "flesh-cube",
-            "name": "Flesh Cube",
-            "description": "It's a cube made of flesh. \"It's rude to stare you know?\"",
-            "trait": "None",
-            "Addendum": "None"
-        },
-        "poop": {
-            "id": "poop",
-            "name": "Something Brown and Sticky",
-            "description": "Look I don't know man you were the one who picked it up",
-            "trait": "None",
-            "Addendum": "None"
-        },
-        "knife": {
-            "id": "knife",
-            "name": "Knife",
-            "description": "Holding this, you are filled with a feeling of DETERMINATION",
-            "trait": "None",
-            "Addendum": "None"
-        },
-        "tupperware": {
-            "id": "tupperware",
-            "name": "Tupperware Bowl... Thing",
-            "description": "No matter how hard you wash it you can still see and smell hints of spahgetti on it",
-            "trait": "None",
-            "Addendum": "None"
-        },
-        "potatoe": {
-            "id": "potatoe",
-            "name": "Potatoe",
-            "description": "Potatoe",
-            "trait": "None",
-            "Addendum": "None"
-        },
         "crumpled-paper": {
             "id": "crumpled-paper",
             "name": "Crumpled Paper",
-            "description": "The text is too small to read",
-            "trait": "None",
-            "Addendum": "None"
-        },
-        "redKey": {
-            "id": "redKey",
-            "name": "Red Key",
-            "description": "It's a red key, das it :|",
-            "trait": "Key",
-            "Addendum": "redRoom"
-        },
-        "blueFirstHalfKey": {
-            "id": "blueFirstHalfKey",
-            "name": "Broken Blue Key Peice 1",
-            "description": "It looks like 1 half of a whole key, neat",
-            "trait": "Combine",
-            "Addendum": "redKey"
-        },
-        "blueSecondHalfKey": {
-            "id": "blueSecondHalfKey",
-            "name": "Broken Blue Key Peice 2",
-            "description": "It looks like 1 half of a whole key, neat",
-            "trait": "Combine",
-            "Addendum": "redKey"
-        },
-        "blueKey": {
-            "id": "blueKey",
-            "name": "Blue Key",
-            "description": "It's a blue key, das it :|",
-            "trait": "Key",
-            "Addendum": "blueRoom"
-        },
-        "lantern": {
-            "id": "lantern",
-            "name": "Lantern",
-            "description": "It's a lantern, seems to still work",
-            "trait": "Lantern",
-            "Addendum": "100"
-        },
-        "divingBody": {
-            "id": "divingBody",
-            "name": "Diving Outfit",
-            "description": "An imcomplete diving suit, seems like it's missing the head and tanks",
-            "trait": "Combine",
-            "Addendum": "divingSuit"
-        },
-        "divingHelmet": {
-            "id": "divingHelmet",
-            "name": "Diving Helmet and Tanks",
-            "description": "A huge helmet and air tanks, but with nothing to secure on",
-            "trait": "Combine",
-            "Addendum": "divingSuit"
-        },
-        "divingSuit": {
-            "id": "divingSuit",
-            "name": "Diving Suit",
-            "description": "A complete diving suit, seems like it can get you ro the end",
-            "trait": "Tool",
-            "Addendum": "Swim"
-        },
-        "musicDisc": {
-            "id": "musicDisc",
-            "name": "Music Disc",
-            "description": "Seems like you can just play this, nice",
-            "trait": "Quest",
-            "Addendum": "musicFile.wav"
+            "description": "The text is too small to read"
         }
     }
 }
