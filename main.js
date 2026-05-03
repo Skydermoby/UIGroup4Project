@@ -94,6 +94,7 @@ const world = {
     swimmable: false,
     enviromentState: -10,
     playingAudio: false,
+    activeClick: null,
     combineInventory: [],
     actionList: []
 };
@@ -112,6 +113,10 @@ const inventorContentEl = document.getElementById("inventory-contents")
 
 const lanternEl = document.getElementById("lantern-level")
 const audioEl = document.getElementById("room-audio")
+
+const bodyEl = document.getElementsByTagName("BODY")[0]
+
+//bodyEl.addEventListener("click", function (){handleOffClick()});
 
 if (northButtonEl != undefined && southButtonEl != undefined && eastButtonEl != undefined && westButtonEl != undefined) {
     northButtonEl.onclick = function() {onNorthClick()};
@@ -266,6 +271,31 @@ function renderRoomContents(room) {
     })
 }
 
+function handleOffClick() {
+    if (world.activeClick != null){
+        world.activeClick.className = "dropdown"
+        world.activeClick = null
+    }
+}
+
+function changeActiveButton(button) {
+    if (world.activeClick == null) {
+        world.activeClick = button
+        button.className = "dropdown-clicked"
+    }
+    else if (world.activeClick != button) {
+        world.activeClick.className = "dropdown"
+        world.activeClick = button
+        button.className = "dropdown-clicked"
+    }
+    else {
+        world.activeClick = null
+        button.className = "dropdown"
+    }
+    console.log(world.activeClick)
+}
+
+
 function createItemButton(item) {
     //Big div 
     const dropDown = document.createElement("div");
@@ -279,7 +309,7 @@ function createItemButton(item) {
     btn.dataset.itemId = item.id;
     btn.textContent = item.name;
     
-    btn.addEventListener("click", function (){messageAreaEl.textContent = item.getDesc()});
+    btn.addEventListener("click", function (){changeActiveButton(dropDown)});
 
     //Invisible Hover Menu
     const hoverMenu = document.createElement("div");
@@ -296,7 +326,7 @@ function createItemButton(item) {
     lookButton.type = "button";
     lookButton.className = "dropdown-action";
     lookButton.textContent = "Look";
-    lookButton.addEventListener("click", function (){messageAreaEl.textContent = item.getDesc()});
+    lookButton.addEventListener("click", function (){messageAreaEl.textContent = item.getDesc(); handleOffClick()});
 
     hoverMenu.appendChild(disableButton);
     hoverMenu.appendChild(lookButton);
@@ -306,7 +336,7 @@ function createItemButton(item) {
         stuckButton.type = "button";
         stuckButton.className = "dropdown-action";
         stuckButton.textContent = "Interact";
-        stuckButton.addEventListener("click", function (){interactObject(item)});
+        stuckButton.addEventListener("click", function (){interactObject(item); handleOffClick()});
 
         hoverMenu.appendChild(stuckButton);
     }
@@ -315,7 +345,7 @@ function createItemButton(item) {
         takeButton.type = "button";
         takeButton.className = "dropdown-action";
         takeButton.textContent = "Pick Up";
-        takeButton.addEventListener("click", function (){takeObject(item.id)});
+        takeButton.addEventListener("click", function (){takeObject(item.id); handleOffClick()});
 
         hoverMenu.appendChild(takeButton);
     }
@@ -426,7 +456,7 @@ function createInventoryButton(item) {
     btn.dataset.itemId = item.id;
     btn.textContent = item.name;
     
-    btn.addEventListener("click", function (){messageAreaEl.textContent = item.getDesc()});
+    btn.addEventListener("click", function (){changeActiveButton(dropDown)});
 
     //Invisible Hover Menu
     const hoverMenu = document.createElement("div");
@@ -443,13 +473,13 @@ function createInventoryButton(item) {
     lookButton.type = "button";
     lookButton.className = "dropdown-action";
     lookButton.textContent = "Look";
-    lookButton.addEventListener("click", function (){messageAreaEl.textContent = item.getDesc()});
+    lookButton.addEventListener("click", function (){messageAreaEl.textContent = item.getDesc(); handleOffClick()});
 
     const dropButton = document.createElement("button");
     dropButton.type = "button";
     dropButton.className = "dropdown-action";
     dropButton.textContent = "Drop";
-    dropButton.addEventListener("click", function (){dropObject(item.id)});
+    dropButton.addEventListener("click", function (){dropObject(item.id); handleOffClick()});
 
     hoverMenu.appendChild(disableButton);
     hoverMenu.appendChild(lookButton);
@@ -460,7 +490,7 @@ function createInventoryButton(item) {
         keyButton.type = "button";
         keyButton.className = "dropdown-action";
         keyButton.textContent = "Use";
-        keyButton.addEventListener("click", function (){useKey(item.addendum)});
+        keyButton.addEventListener("click", function (){useKey(item.addendum); handleOffClick()});
 
         hoverMenu.appendChild(keyButton);
     }
@@ -469,7 +499,7 @@ function createInventoryButton(item) {
         toolButton.type = "button";
         toolButton.className = "dropdown-action";
         toolButton.textContent = "Use";
-        toolButton.addEventListener("click", function (){useLantern(item)});
+        toolButton.addEventListener("click", function (){useLantern(item); handleOffClick()});
 
         hoverMenu.appendChild(toolButton);
     }
@@ -478,7 +508,7 @@ function createInventoryButton(item) {
         toolButton.type = "button";
         toolButton.className = "dropdown-action";
         toolButton.textContent = "Use";
-        toolButton.addEventListener("click", function (){useTool(item)});
+        toolButton.addEventListener("click", function (){useTool(item); handleOffClick()});
 
         hoverMenu.appendChild(toolButton);
     }
@@ -502,7 +532,7 @@ function createInventoryButton(item) {
             disableButton2.type = "button";
             disableButton2.className = "dropdown-action";
             disableButton2.textContent = world.combineInventory[i].name;
-            disableButton2.addEventListener("click", function (){combineItems(item, world.combineInventory[i])});
+            disableButton2.addEventListener("click", function (){combineItems(item, world.combineInventory[i]); handleOffClick()});
 
             hoverMenu2.appendChild(disableButton2)
         }

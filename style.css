@@ -83,7 +83,7 @@
   border: none;
 }
 
-.dropdown {
+.dropdown,  .dropdown-clicked{
   position: relative;
   display: inline-block;
 }
@@ -110,9 +110,9 @@
 }
 
 
-.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropdown-content, .dropdown-clicked .dropdown-content {display: block;}
 
-.dropdown:hover .room-item {background-color: #fee8a6;}
+.dropdown:hover .room-item, .dropdown-clicked .dropdown-content {background-color: #fee8a6;}
 
 .dropdown-action:hover {background-color: #b4b4b4;}
 
