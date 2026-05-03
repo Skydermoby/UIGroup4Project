@@ -94,7 +94,8 @@ const world = {
     swimmable: false,
     enviromentState: -10,
     playingAudio: false,
-    combineInventory: []
+    combineInventory: [],
+    actionList: []
 };
 
 const roomNameEl = document.querySelector('#room-name')
@@ -122,8 +123,9 @@ if (northButtonEl != undefined && southButtonEl != undefined && eastButtonEl != 
 function onNorthClick() {
     const roomName = world.currentRoom["exits"].get("north")["name"]
     const roomId = world.currentRoom["exits"].get("north")["id"]
-    if (typeof world.currentRoom.locks.get(roomId) !== "undefined") {
+    if (typeof world.currentRoom.locks.get(roomId) !== "undefined" && !checkAction(world.currentRoom.locks.get(roomId), "door")) {
         messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
+        checkAction(world.currentRoom.locks.get(roomId), "door")
     }
     else {
         diminishLight()
@@ -135,8 +137,9 @@ function onNorthClick() {
 function onEastClick() {
     const roomName = world.currentRoom["exits"].get("east")["name"]
     const roomId = world.currentRoom["exits"].get("east")["id"]
-    if (typeof world.currentRoom.locks.get(roomId) != "undefined") {
+    if (typeof world.currentRoom.locks.get(roomId) != "undefined" && !checkAction(world.currentRoom.locks.get(roomId), "door")) {
         messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
+        checkAction(world.currentRoom.locks.get(roomId), "door")
     }
     else {
         diminishLight()
@@ -148,8 +151,10 @@ function onEastClick() {
 function onSouthClick() {
     const roomName = world.currentRoom["exits"].get("south")["name"]
     const roomId = world.currentRoom["exits"].get("south")["id"]
-    if (typeof world.currentRoom.locks.get(roomId) !== "undefined") {
+    console.log(world.currentRoom.locks.get(roomId))
+    if (typeof world.currentRoom.locks.get(roomId) !== "undefined" && !checkAction(world.currentRoom.locks.get(roomId), "door")) {
         messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
+        checkAction(world.currentRoom.locks.get(roomId), "door")
     }
     else {
         diminishLight()
@@ -161,8 +166,9 @@ function onSouthClick() {
 function onWestClick() {
     const roomName = world.currentRoom["exits"].get("west")["name"]
     const roomId = world.currentRoom["exits"].get("west")["id"]
-    if (typeof world.currentRoom.locks.get(roomId) !== "undefined") {
+    if (typeof world.currentRoom.locks.get(roomId) !== "undefined" && !checkAction(world.currentRoom.locks.get(roomId), "door")) {
         messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
+        checkAction(world.currentRoom.locks.get(roomId), "door")
     }
     else {
         diminishLight()
@@ -292,15 +298,27 @@ function createItemButton(item) {
     lookButton.textContent = "Look";
     lookButton.addEventListener("click", function (){messageAreaEl.textContent = item.getDesc()});
 
-    const takeButton = document.createElement("button");
-    takeButton.type = "button";
-    takeButton.className = "dropdown-action";
-    takeButton.textContent = "Pick Up";
-    takeButton.addEventListener("click", function (){takeObject(item.id)});
-
     hoverMenu.appendChild(disableButton);
     hoverMenu.appendChild(lookButton);
-    hoverMenu.appendChild(takeButton);
+
+    if (item.trait == "Stuck") {
+        const stuckButton = document.createElement("button");
+        stuckButton.type = "button";
+        stuckButton.className = "dropdown-action";
+        stuckButton.textContent = "Interact";
+        stuckButton.addEventListener("click", function (){interactObject(item)});
+
+        hoverMenu.appendChild(stuckButton);
+    }
+    else {
+        const takeButton = document.createElement("button");
+        takeButton.type = "button";
+        takeButton.className = "dropdown-action";
+        takeButton.textContent = "Pick Up";
+        takeButton.addEventListener("click", function (){takeObject(item.id)});
+
+        hoverMenu.appendChild(takeButton);
+    }
 
     //Appending Everything
     dropDown.appendChild(btn);
@@ -360,6 +378,13 @@ function dropObject(itemId) {
     console.log(world.player.contents)
     renderRoomContents(world.currentRoom);
     renderInventory();
+}
+
+function interactObject(item) {
+    if (checkAction(item.addendum[0], "item")) {
+        addItem(item.addendum[1])
+        messageAreaEl.textContent = messageAreaEl.textContent + ", you got a " + item.addendum[1] + "!"
+    }
 }
 
 //Personal Inventory Stuff
@@ -448,6 +473,15 @@ function createInventoryButton(item) {
 
         hoverMenu.appendChild(toolButton);
     }
+    else if (item.trait == "Tool") {
+        const toolButton = document.createElement("button");
+        toolButton.type = "button";
+        toolButton.className = "dropdown-action";
+        toolButton.textContent = "Use";
+        toolButton.addEventListener("click", function (){useTool(item)});
+
+        hoverMenu.appendChild(toolButton);
+    }
     else if (item.trait == "Combine") {
         const combineButton = document.createElement("button");
         combineButton.type = "button";
@@ -492,6 +526,18 @@ function createInventoryButton(item) {
 
 
     return dropDown;
+}
+
+function addItem(itemId) {
+    console.log("Added ", itemId)
+    const roomContent = world.currentRoom.contents
+    const index = roomContent.indexOf(world.items.get(itemId));
+    const heldItem = world.currentRoom.contents[index]
+    world.player.contents.push(heldItem);
+    if (heldItem.trait == "Combine") {
+        world.combineInventory.push(heldItem)
+    }
+    renderInventory();
 }
 
 function removeItem(itemId) {
@@ -557,6 +603,40 @@ function useLantern(item) {
     render()
 }
 
+function useTool(item) {
+    if (item.addendum == "used") {
+        messageAreaEl.textContent = "You already used the " + item.name;
+    }
+    else {
+        world.actionList.push(item.addendum)
+        messageAreaEl.textContent = "You used the " + item.name + ", you can now " + item.addendum;
+        item.addendum = "used"
+    }
+    render()
+}
+
+function checkAction(action, type) {
+    const index = world.actionList.indexOf(action);
+    if (index == -1) {
+        if (type == "door") {
+            messageAreaEl.textContent = "You can't get pass without being able to " + action;
+        }
+        else {
+            messageAreaEl.textContent = "You can't interact without " + action;
+        }
+        return false
+    }
+    else {
+        if (type == "door") {
+            messageAreaEl.textContent = "You managed to pass via " + action;
+        }
+        else {
+            messageAreaEl.textContent = "You interacted via " + action;
+        }
+        return true
+    }
+}
+
 function diminishLight() {
     if (world.illuminationLevel > 0) {
         changeLanternLevel(world.enviromentState)
@@ -612,7 +692,7 @@ async function init() {
             roomExits.set(exit, world.rooms.get(db.rooms[room]["exits"][exit]))
         }
         for (var lock in db.rooms[room]["locks"]) {
-            roomLocks.set(db.rooms[room]["locks"][lock], true)
+            roomLocks.set(lock, db.rooms[room]["locks"][lock])
         }
         world.rooms.get(db.rooms[room]["id"]).exits = roomExits
         world.rooms.get(db.rooms[room]["id"]).locks = roomLocks
