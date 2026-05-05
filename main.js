@@ -96,7 +96,7 @@ const world = {
     playingAudio: false,
     activeClick: null,
     combineInventory: [],
-    actionList: []
+    actionList: ["Look"]
 };
 
 const roomNameEl = document.querySelector('#room-name')
@@ -129,8 +129,10 @@ function onNorthClick() {
     const roomName = world.currentRoom["exits"].get("north")["name"]
     const roomId = world.currentRoom["exits"].get("north")["id"]
     if (typeof world.currentRoom.locks.get(roomId) !== "undefined" && !checkAction(world.currentRoom.locks.get(roomId), "door")) {
-        messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
-        checkAction(world.currentRoom.locks.get(roomId), "door")
+        if (world.currentRoom.locks.get(roomId) == "Key")
+            messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
+        else
+            checkAction(world.currentRoom.locks.get(roomId), "door");
     }
     else {
         diminishLight()
@@ -143,8 +145,10 @@ function onEastClick() {
     const roomName = world.currentRoom["exits"].get("east")["name"]
     const roomId = world.currentRoom["exits"].get("east")["id"]
     if (typeof world.currentRoom.locks.get(roomId) != "undefined" && !checkAction(world.currentRoom.locks.get(roomId), "door")) {
-        messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
-        checkAction(world.currentRoom.locks.get(roomId), "door")
+        if (world.currentRoom.locks.get(roomId) == "Key")
+            messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
+        else
+            checkAction(world.currentRoom.locks.get(roomId), "door");
     }
     else {
         diminishLight()
@@ -158,8 +162,10 @@ function onSouthClick() {
     const roomId = world.currentRoom["exits"].get("south")["id"]
     console.log(world.currentRoom.locks.get(roomId))
     if (typeof world.currentRoom.locks.get(roomId) !== "undefined" && !checkAction(world.currentRoom.locks.get(roomId), "door")) {
-        messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
-        checkAction(world.currentRoom.locks.get(roomId), "door")
+        if (world.currentRoom.locks.get(roomId) == "Key")
+            messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
+        else
+            checkAction(world.currentRoom.locks.get(roomId), "door");
     }
     else {
         diminishLight()
@@ -172,8 +178,10 @@ function onWestClick() {
     const roomName = world.currentRoom["exits"].get("west")["name"]
     const roomId = world.currentRoom["exits"].get("west")["id"]
     if (typeof world.currentRoom.locks.get(roomId) !== "undefined" && !checkAction(world.currentRoom.locks.get(roomId), "door")) {
-        messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
-        checkAction(world.currentRoom.locks.get(roomId), "door")
+        if (world.currentRoom.locks.get(roomId) == "Key")
+            messageAreaEl.textContent = "Hmm, seems like the door to " + roomName + " is locked";
+        else
+            checkAction(world.currentRoom.locks.get(roomId), "door");
     }
     else {
         diminishLight()
@@ -349,6 +357,9 @@ function createItemButton(item) {
 
         hoverMenu.appendChild(cfButton);
     }
+    else if (item.trait == "Sign") {
+        
+    }
     else {
         const takeButton = document.createElement("button");
         takeButton.type = "button";
@@ -421,8 +432,13 @@ function dropObject(itemId) {
 
 function interactObject(item) {
     if (checkAction(item.addendum[0], "item")) {
-        addItem(item.addendum[1])
-        messageAreaEl.textContent = messageAreaEl.textContent + ", you got a " + item.addendum[1] + "!"
+        if (item.addendum[1] == "") {
+            messageAreaEl.textContent = "Hmm, seems like it's empty"
+        }
+        else{
+            addItem(item.addendum[1])
+            messageAreaEl.textContent = messageAreaEl.textContent + ", you got a " + item.addendum[1] + "!"
+        }
     }
 }
 
@@ -569,10 +585,9 @@ function createInventoryButton(item) {
 
 function addItem(itemId) {
     console.log("Added ", itemId)
-    const roomContent = world.currentRoom.contents
-    const index = roomContent.indexOf(world.items.get(itemId));
-    const heldItem = world.currentRoom.contents[index]
+    const heldItem = world.items.get(itemId);
     world.player.contents.push(heldItem);
+    console.log(heldItem)
     if (heldItem.trait == "Combine") {
         world.combineInventory.push(heldItem)
     }
@@ -710,7 +725,7 @@ function playPause() {
 
 
 async function init() {
-    const resp = await fetch("./db.json");
+    const resp = await fetch("./game.json");
     const db = await resp.json();
     //world.rooms = db.rooms;
     //world.items = db.items;
@@ -747,11 +762,11 @@ async function init() {
     console.log(world.items)
 
     world.player = new Player("player", "YOU", "You're feeling... Fine :)", null, [])
-    world.currentRoom = world.rooms.get("livingRoom")
+    world.currentRoom = world.rooms.get("cabinDoor")
     world.illuminated = false
     setLanternLevel(0)
     renderInventory();
-    messageAreaEl.textContent = "You got up from the ground" //Starting message
+    messageAreaEl.textContent = "You suddenly awake infront of a door, not sure when, where, why, all you know is you need to escape" //Starting message
     
     render();
 }
@@ -918,6 +933,7 @@ function sceneMidQuest() {
                     "Thank you, my friend. A deal is a deal: there is a warm glow to the south. " +
                     "Say hello to it for me, would you?"
                 );
+                receiveItem("divingHelmet")
             } else {
                 world.dialog.say("Empty hands, little wanderer. Do not offer what you do not carry.");
             }

@@ -1,0 +1,763 @@
+{ 
+    "rooms": {
+        "cabinDoor": {
+            "id": "cabinDoor",
+            "name": "The Cabin Door",
+            "description": "Through the purposely cut holes of the wooden door you can see moonlight",
+            "exits": {
+                "north":"clearing",
+                "south": "cabinDesk"
+            },
+            "locks": {
+                "clearing": "Key"
+            },
+            "contents": [],
+            "special-contents": [],
+            "quest": ["Tutorial", "End"],
+            "trait": "Dark"
+        },
+        "cabinDesk": {
+            "id": "cabinDesk",
+            "name": "The Desk",
+            "description": "It's a dust covered desk, clearly it hasn't been used in ages",
+            "exits": {
+                "north": "cabinDoor",
+                "east": "cabinFireplace",
+                "west": "cabinShelves"
+            },
+            "locks": {
+                
+            },
+            "contents": ["cabinBook"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "cabinFireplace": {
+            "id": "cabinFireplace",
+            "name": "The Fireplace",
+            "description": "A bright fireplace illuminates the immediate surroundings. You notice a few lightsources",
+            "exits": {
+                "west": "cabinDesk"
+            },
+            "locks": {
+                
+            },
+            "contents": ["lantern", "fireplace"],
+            "special-contents": [],
+            "quest": [],
+            "trait": ""
+        },
+        "cabinShelves": {
+            "id": "cabinShelves",
+            "name": "The Shelves",
+            "description": "Shelves upon shelves, boxes upon boxes, \"a hourder's dream,\" you thought to yourself",
+            "exits": {
+                "east": "cabinDesk"
+            },
+            "locks": {
+            },
+            "contents": ["cbox1", "cbox2", "cbox3", "cbox4", "cbox5"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "clearing": {
+            "id": "clearing",
+            "name": "Empty Clearing",
+            "description": "You now stand in a moonlit clearing, with nothing but your trusty lantern, time to take a step of faith",
+            "exits": {
+                "north":"riddleOne",
+                "south": "cabinDoor"
+            },
+            "locks": {
+            },
+            "contents": [],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleOne": {
+            "id": "riddleOne",
+            "name": "Triple Forking Path",
+            "description": "Now in a dense forest, You stand between 3 diverging paths, you notice a sign in the middle",
+            "exits": {
+                "north":"riddleOne200",
+                "east": "riddleOne113",
+                "south": "clearing",
+                "west": "riddleOne84"
+            },
+            "locks": {
+            },
+            "contents": ["riddle1Sign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleOne200": {
+            "id": "riddleOne200",
+            "name": "200",
+            "description": "After traversing a while, you realise you hit a dead end",
+            "exits": {
+                "south": "riddleOne"
+            },
+            "locks": {
+            },
+            "contents": ["riddleWrongSign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleOne113": {
+            "id": "riddleOne113",
+            "name": "113",
+            "description": "After traversing a while, you realise you hit a dead end",
+            "exits": {
+                "south": "riddleOne"
+            },
+            "locks": {
+            },
+            "contents": ["riddleWrongSign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleOne84": {
+            "id": "riddleOne84",
+            "name": "84",
+            "description": "You notice a sign in the middle of the road, it has a very noticable smiley face on it",
+            "exits": {
+                "north":"riddleTwo",
+                "south": "riddleOne"
+            },
+            "locks": {
+            },
+            "contents": ["riddle1RightSign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleTwo": {
+            "id": "riddleTwo",
+            "name": "Second Forking Path",
+            "description": "You once again stand between 3 diverging paths, time to further test your skills",
+            "exits": {
+                "north":"riddleTwoSpikes",
+                "east": "riddleTwoLions",
+                "south": "riddleOne84",
+                "west": "riddleTwoBlades"
+            },
+            "locks": {
+            },
+            "contents": ["riddle2Sign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleTwoSpikes": {
+            "id": "riddleTwoSpikes",
+            "name": "The Spikes",
+            "description": "After traversing a while, you realise you hit a dead end",
+            "exits": {
+                "south": "riddleTwo"
+            },
+            "locks": {
+            },
+            "contents": ["riddleWrongSign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleTwoBlades": {
+            "id": "riddleTwoBlades",
+            "name": "The Blades",
+            "description": "After traversing a while, you realise you hit a dead end",
+            "exits": {
+                "south": "riddleTwo"
+            },
+            "locks": {
+            },
+            "contents": ["riddleWrongSign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleTwoLions": {
+            "id": "riddleTwoLions",
+            "name": "The Lions",
+            "description": "You notice a sign in the middle of the road, it has a very noticable smiley face on it",
+            "exits": {
+                "north":"riddleThree",
+                "south": "riddleTwo"
+            },
+            "locks": {
+            },
+            "contents": ["riddle2RightSign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleThree": {
+            "id": "riddleThree",
+            "name": "Final Forking Path",
+            "description": "You once again, once again stand between 3 diverging paths, you start getting frustrated and hope there's new mechanics after this",
+            "exits": {
+                "north":"riddleThree3",
+                "east": "riddleThree5",
+                "south": "riddleTwoLions",
+                "west": "riddleThree6"
+            },
+            "locks": {
+            },
+            "contents": ["riddle3Sign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleThree3": {
+            "id": "riddleThree3",
+            "name": "3",
+            "description": "After traversing a while, you realise you hit a dead end",
+            "exits": {
+                "south": "riddleThree"
+            },
+            "locks": {
+            },
+            "contents": ["riddleWrongSign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleThree5": {
+            "id": "riddleThree5",
+            "name": "5",
+            "description": "After traversing a while, you realise you hit a dead end",
+            "exits": {
+                "south": "riddleThree"
+            },
+            "locks": {
+            },
+            "contents": ["riddleWrongSign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "riddleThree6": {
+            "id": "riddleThree6",
+            "name": "6",
+            "description": "You notice a sign in the middle of the road, it has a very noticable smiley face on it",
+            "exits": {
+                "north":"theCampfire",
+                "south": "riddleThree"
+            },
+            "locks": {
+            },
+            "contents": ["riddle3RightSign"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "theCampfire": {
+            "id": "theCampfire",
+            "name": "The Camp Fire",
+            "description": "You find a lonely camp, aside from a booming campfire, you also notice many other supplies",
+            "exits": {
+                "north":"theRiver",
+                "east": "theOrchard",
+                "south": "thePlayground",
+                "west": "riddleThree"
+            },
+            "locks": {
+                "theOrchard": "Key"
+            },
+            "contents": ["campfire", "scribbled-notes", "slingshot"],
+            "special-contents": [],
+            "quest": [],
+            "trait": ""
+        },
+        "theRiver": {
+            "id": "theRiver",
+            "name": "River",
+            "description": "Across a raging river, you notice a bright light",
+            "exits": {
+                "north":"theExit",
+                "south": "thePlayground"
+            },
+            "locks": {
+                "theExit": "Swim"
+            },
+            "contents": ["divingBody", "wet-note"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "thePlayground": {
+            "id": "thePlayground",
+            "name": "Playground",
+            "description": "You stand at the entrance of a playground, it's very hard to not notice the long pair of legs next to you",
+            "exits": {
+                "east": "merryGoround",
+                "west": "theCampfire"
+            },
+            "locks": {
+            },
+            "contents": ["flesh-cube", "potatoe"],
+            "special-contents": ["TallMan"],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "merryGoround": {
+            "id": "merryGoround",
+            "name": "Merry-Go-Round",
+            "description": "A Merry-Go-Round, not exactly the most exciting thing",
+            "exits": {
+                "north":"slide",
+                "east": "thePlayground",
+                "south": "sandbox",
+                "west": "monkeyBars"
+            },
+            "locks": {
+            },
+            "contents": ["scissors"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "slide": {
+            "id": "slide",
+            "name": "Slide",
+            "description": "A slide, it's too dark, and someting wet is on the steps so, no thanks",
+            "exits": {
+                "east": "jungleGym",
+                "south": "merryGoround"
+            },
+            "locks": {
+            },
+            "contents": ["darkMass"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "jungleGym": {
+            "id": "jungleGym",
+            "name": "Jungle Gym",
+            "description": "A large net of thick ropes, impossible to get in, or out, so why is there a key inside...",
+            "exits": {
+                "east": "slide",
+                "south": "monkeyBars"
+            },
+            "locks": {
+            },
+            "contents": ["netStrings"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "monkeyBars": {
+            "id": "monkeyBars",
+            "name": "Monkey Bars",
+            "description": "You notice a shovel in the middle of the monkey bars, unfortunately you're still only able to do 2-3 so...",
+            "exits": {
+                "north":"jungleGym",
+                "east": "merryGoround",
+                "south": "seeSaw"
+            },
+            "locks": {
+            },
+            "contents": ["high-shovel"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "seeSaw": {
+            "id": "seeSaw",
+            "name": "Seesaw",
+            "description": "A seesaw, that's it :|",
+            "exits": {
+                "north":"monkeyBars",
+                "east": "sandBox"
+            },
+            "locks": {
+            },
+            "contents": [],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "sandBox": {
+            "id": "sandBox",
+            "name": "Sandbox",
+            "description": "\"Pirates hide their treasure in the sand!\" ...Atleast that's what Kris used to say, you miss him",
+            "exits": {
+                "north":"merryGoround",
+                "west": "seeSaw"
+            },
+            "locks": {
+            },
+            "contents": ["sand"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "theOrchard": {
+            "id": "theOrchard",
+            "name": "The Orchard",
+            "description": "Across groves of dead apple trees, only one remains, it stares at you eagerly",
+            "exits": {
+                "west": "theCampfire"
+            },
+            "locks": {
+            },
+            "contents": [],
+            "special-contents": ["AppleTree"],
+            "quest": [],
+            "trait": "Dark"
+        },
+        "theExit": {
+            "id": "theExit",
+            "name": "The Exit",
+            "description": "After tials and tribulations, you can finally leave... You also wondered how you never actually used the word \"tribulations\" before",
+            "exits": {
+                "north":"falling",
+                "south": "theRiver"
+            },
+            "locks": {
+                "theRiver": "Swim"
+            },
+            "contents": [],
+            "special-contents": [],
+            "quest": [],
+            "trait": ""
+        },
+        "falling": {
+            "id": "falling",
+            "name": "The End?",
+            "description": "As you stepped through the door you suddenly find yourself in freefall, you life begins to flash before your eyes as the floor gets closer and closer",
+            "exits": {
+                "north":"bedroom",
+                "east": "bedroom",
+                "south": "bedroom",
+                "west": "bedroom"
+            },
+            "locks": {
+            },
+            "contents": [],
+            "special-contents": [],
+            "quest": [],
+            "trait": ""
+        },
+        "bedroom": {
+            "id": "bedroom",
+            "name": "KEEP FALLING",
+            "description": "You suddenly lay awake in your bed at home, you can feel a huge wave of relief as you realise it was all a dream, however you can hear a knock on the door",
+            "exits": {
+                "north":"finalDoor"
+            },
+            "locks": {
+            },
+            "contents": [],
+            "special-contents": [],
+            "quest": [],
+            "trait": ""
+        },
+        "finalDoor": {
+            "id": "finalDoor",
+            "name": "Door",
+            "description": "You now stand in a moonlit clearing, with nothing but your trusty lantern, you realise you're still in a dream",
+            "exits": {
+            },
+            "locks": {
+            },
+            "contents": [],
+            "special-contents": ["TheEnd"],
+            "quest": [],
+            "trait": ""
+        },
+        "template": {
+            "id": "template",
+            "name": "The Cabin Door",
+            "description": "Through the purposely cut holes of the wooden door you can see moonlight",
+            "exits": {
+                "north":"clearing",
+                "east": "kitchen",
+                "south": "cabinDesk",
+                "west": "redRoom"
+            },
+            "locks": {
+                "redRoom": "Key"
+            },
+            "contents": ["flesh-cube", "poop"],
+            "special-contents": [],
+            "quest": [],
+            "trait": "Dark"
+        }
+    },
+    "items": {
+        "flesh-cube": {
+            "id": "flesh-cube",
+            "name": "Flesh Cube",
+            "description": "It's a cube made of flesh. \"It's rude to stare you know?\"",
+            "trait": "None",
+            "Addendum": "None"
+        },
+        "tupperware": {
+            "id": "tupperware",
+            "name": "Tupperware Bowl... Thing",
+            "description": "No matter how hard you wash it you can still see and smell hints of spahgetti on it",
+            "trait": "Stuck",
+            "Addendum": ["Swim", "knife"]
+        },
+        "netStrings": {
+            "id": "netStrings",
+            "name": "Jungle Gym Strings",
+            "description": "Behind all the strings you can see a small key",
+            "trait": "Stuck",
+            "Addendum": ["Cut", "blueFirstHalfKey"]
+        },
+        "high-shovel": {
+            "id": "high-shovel",
+            "name": "Shovel",
+            "description": "A shovel is just out of reach",
+            "trait": "Stuck",
+            "Addendum": ["Shoot", "shovel"]
+        },
+        "sand": {
+            "id": "sand",
+            "name": "Sand",
+            "description": "It's too much to dig with your hands, you need a bigger scoop",
+            "trait": "Stuck",
+            "Addendum": ["Dig", "blueSecondHalfKey"]
+        },
+        "darkMass": {
+            "id": "darkMass",
+            "name": "Dark Block, thing",
+            "description": "Ypon closer inspection, looks like a rock!",
+            "trait": "Stuck",
+            "Addendum": ["Look", "rock"]
+        },
+        "cbox1": {
+            "id": "cbox1",
+            "name": "Shelf Box 1",
+            "description": "Just a box, maybe look inside it?",
+            "trait": "Stuck",
+            "Addendum": ["Look", ""]
+        },
+        "cbox2": {
+            "id": "cbox2",
+            "name": "Shelf Box 2",
+            "description": "Just a box, maybe look inside it?",
+            "trait": "Stuck",
+            "Addendum": ["Look", ""]
+        },
+        "cbox3": {
+            "id": "cbox3",
+            "name": "Shelf Box 3",
+            "description": "Just a box, maybe look inside it?",
+            "trait": "Stuck",
+            "Addendum": ["Look", ""]
+        },
+        "cbox4": {
+            "id": "cbox4",
+            "name": "Shelf Box 4",
+            "description": "Just a box, maybe look inside it?",
+            "trait": "Stuck",
+            "Addendum": ["Look", "cabinKey"]
+        },
+        "cbox5": {
+            "id": "cbox5",
+            "name": "Shelf Box 5",
+            "description": "Just a box, maybe look inside it?",
+            "trait": "Stuck",
+            "Addendum": ["Look", ""]
+        },
+        "riddle1Sign": {
+            "id": "riddle1Sign",
+            "name": "Wooden Sign",
+            "description": "It asks \"Two pairs of die with two 2s, two 4s, and two 6s on all sides, if rolled 10 times, what is the only possible sum?\"",
+            "trait": "Sign",
+            "Addendum": "None"
+        },
+        "riddle2Sign": {
+            "id": "riddle2Sign",
+            "name": "Wooden Sign",
+            "description": "\"There are 3 rooms, one contains a deadly spike pit, one contains two hungry lions that haven't eaten in weeks, and another contains swinging blades, which room should you go through?\"",
+            "trait": "Sign",
+            "Addendum": "None"
+        },
+        "riddle3Sign": {
+            "id": "riddle3Sign",
+            "name": "Wooden Sign",
+            "description": "\"Okay here's an easy one, go through the path that is equal to 3!\"",
+            "trait": "Sign",
+            "Addendum": "None"
+        },
+        "riddle1RightSign": {
+            "id": "riddle1RightSign",
+            "name": "Wooden Sign",
+            "description": "\"Correct! The max possible is 120, so it can't be 200, and since it's all even numbers it can't be 113, which leaves 84!\"",
+            "trait": "Sign",
+            "Addendum": "None"
+        },
+        "riddle2RightSign": {
+            "id": "riddle2RightSign",
+            "name": "Wooden Sign",
+            "description": "\"Correct! Because lions that haven't eaten in weeks would be dead!\"",
+            "trait": "Sign",
+            "Addendum": "None"
+        },
+        "riddle3RightSign": {
+            "id": "riddle3RightSign",
+            "name": "Wooden Sign with a smiley face",
+            "description": "\"3! = 3 * 2 * 1 = 6\"",
+            "trait": "Sign",
+            "Addendum": "None"
+        },
+        "riddleWrongSign": {
+            "id": "riddleWrongSign",
+            "name": "Wooden Sign",
+            "description": "\"Sorry, that wasn't the right answer...\"",
+            "trait": "Sign",
+            "Addendum": "None"
+        },
+        "potatoe": {
+            "id": "potatoe",
+            "name": "Potatoe",
+            "description": "Potatoe",
+            "trait": "None",
+            "Addendum": "None"
+        },
+        "cabinBook": {
+            "id": "cabinBook",
+            "name": "Dusty Book",
+            "description": "After dusting it off, you notice the back says \"Spare Key in Box 4\"",
+            "trait": "None",
+            "Addendum": "None"
+        },
+        "scribbled-notes": {
+            "id": "scribbled-notes",
+            "name": "Dirty Notebook",
+            "description": "\"Jimmy went North and said he'd return if he couldn't find the exit, it's been a few hours, I think he figured it out\"",
+            "trait": "None",
+            "Addendum": "None"
+        },
+        "wet-note": {
+            "id": "wet-note",
+            "name": "Hastily Written Damp Note",
+            "description": "\"God damn it all, that long legs grabbed my helmet and tank, I have no idea where he went but this is my only shot at leaving\"",
+            "trait": "None",
+            "Addendum": "None"
+        },
+        "redKey": {
+            "id": "redKey",
+            "name": "Red Key",
+            "description": "It's a red key, das it :|",
+            "trait": "Key",
+            "Addendum": "redRoom"
+        },
+        "cabinKey": {
+            "id": "cabinKey",
+            "name": "Key",
+            "description": "A gold key that has an odd smell, it must be the spare for the cabin door",
+            "trait": "Key",
+            "Addendum": "clearing"
+        },
+        "blueFirstHalfKey": {
+            "id": "blueFirstHalfKey",
+            "name": "The Bow of Orchard Key",
+            "description": "It looks like 1 half of a whole key, neat",
+            "trait": "Combine",
+            "Addendum": "blueKey"
+        },
+        "blueSecondHalfKey": {
+            "id": "blueSecondHalfKey",
+            "name": "The Blade of Orchard Key",
+            "description": "It looks like 1 half of a whole key, neat",
+            "trait": "Combine",
+            "Addendum": "blueKey"
+        },
+        "blueKey": {
+            "id": "blueKey",
+            "name": "Orchard Key",
+            "description": "Seems like you can use this to unlock the Orchard gate",
+            "trait": "Key",
+            "Addendum": "theOrchard"
+        },
+        "lantern": {
+            "id": "lantern",
+            "name": "Lantern",
+            "description": "It's a lantern, seems to still work",
+            "trait": "Lantern",
+            "Addendum": "100"
+        },
+        "slingshot": {
+            "id": "slingshot",
+            "name": "Empty Slingshot",
+            "description": "A cool slingshot, too bad you don't have anything to shoot",
+            "trait": "Combine",
+            "Addendum": "loadedSlingshot"
+        },
+        "loadedSlingshot": {
+            "id": "loadedSlingshot",
+            "name": "Loaded Sling Shot",
+            "description": "*Doom music starts playing*",
+            "trait": "Tool",
+            "Addendum": "Shoot"
+        },
+        "rock": {
+            "id": "rock",
+            "name": "Rock",
+            "description": "A small rock, seems like the perfect ammo source",
+            "trait": "Combine",
+            "Addendum": "loadedSlingshot"
+        },
+        "divingBody": {
+            "id": "divingBody",
+            "name": "Diving Outfit",
+            "description": "An imcomplete diving suit, seems like it's missing the head and tanks",
+            "trait": "Combine",
+            "Addendum": "divingSuit"
+        },
+        "divingHelmet": {
+            "id": "divingHelmet",
+            "name": "Diving Helmet and Tanks",
+            "description": "A huge helmet and air tanks, but with nothing to secure on",
+            "trait": "Combine",
+            "Addendum": "divingSuit"
+        },
+        "divingSuit": {
+            "id": "divingSuit",
+            "name": "Diving Suit",
+            "description": "A complete diving suit, seems like it can get you ro the end",
+            "trait": "Tool",
+            "Addendum": "Swim"
+        },
+        "scissors": {
+            "id": "scissors",
+            "name": "Scissors",
+            "description": "Don't run with them",
+            "trait": "Tool",
+            "Addendum": "Cut"
+        },
+        "shovel": {
+            "id": "shovel",
+            "name": "Shovel",
+            "description": "\"Their all scattered in graves, here I go\"",
+            "trait": "Tool",
+            "Addendum": "Dig"
+        },
+        "campfire": {
+            "id": "campfire",
+            "name": "Campfire",
+            "description": "It's a warm campfire",
+            "trait": "Campfire",
+            "Addendum": "None"
+        },
+        "fireplace": {
+            "id": "fireplace",
+            "name": "Fireplace",
+            "description": "It's a warm fireplace, seems like you can refuel your lantern here",
+            "trait": "Campfire",
+            "Addendum": "None"
+        }
+    }
+}
