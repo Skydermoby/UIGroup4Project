@@ -879,18 +879,24 @@ init().then(setupDialogAndQuestSystems).catch(function (err) {
 
 // FOR SHRESTA: Put all your dialog here, thx
 
-const Diag1 = "Placeholder1"
-const Diag2 = "Placeholder2"
-const Diag3 = "Placeholder3"
-const Diag4 = "Placeholder4"
-const Diag5 = "Placeholder5"
-const Diag6 = "Placeholder6"
-const Diag7 = "Placeholder7"
-const Diag8 = "Placeholder8"
-const Diag9 = "Placeholder9"
-const Diag10 = "Placeholder10"
-const Diag11 = "Placeholder11"
-const Diag12 = "Placeholder12"
+// Long-Necked Man dialogue (Miro flow nodes 1-12).
+// Personality: eerie but cordial; calm voice that suggests he might
+// grab and eat the player at any moment. Player responses are
+// nervous and overly cooperative.
+const Diag1  = "Oh... hello there, little wanderer. How wonderful of you to find your way to my clearing. Such a quaint, tender thing you are. Tell me... what brings you to my company?";
+const Diag2  = "W-where... where am I, exactly?";
+const Diag3  = "Please. I just need to know how to leave this place.";
+const Diag4  = "You stand in Cusclectown, little one. A place your kind might call... a nightmare. Such a small, quaint word for somewhere so very vast.";
+const Diag5  = "To leave, you must cross the great river to the north. But the river... it does not part for free, you see. A favor is asked of every traveler. Something given. Something taken.";
+const Diag6  = "A-anything! Just tell me what you need!";
+const Diag7  = "How agreeable of you. As it happens, I find myself... peckish. There is an orchard just past the campfire, where one fine apple still grows. Bring it to me. Oh, but the gate is locked tight, and the key was lost long ago. Among the playthings, I think. The playground. Yes. Bring me the apple, little one. I will be waiting. Patiently. Always patiently.";
+const Diag8  = "Ah. The little wanderer returns. Tell me... have you brought what was promised?";
+const Diag9  = "N-not yet. I'm still looking. Just a little more time, please.";
+const Diag10 = "Yes. Yes, here it is. The apple. Please... take it.";
+const Diag11 = "Of course, of course. Take all the time you need, little one. I have... so very much of it. I shall be here when you return. Always here.";
+const Diag12 = "Oh. Oh, how splendid. How perfectly, beautifully ripe. A bargain is a bargain, little wanderer. As promised. Here. A diving suit. The river will let you pass, in this. Off you go now. Safe travels. Safe travels indeed.";
+
+// Apple Tree dialogue (Diag13-Diag19) - left for Shresta to fill in.
 const Diag13 = "Placeholder13"
 const Diag14 = "Placeholder14"
 const Diag15 = "Placeholder15"
