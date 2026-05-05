@@ -25,7 +25,7 @@
             "locks": {
                 "observatory": "Swim"
             },
-            "contents": ["knife", "tupperware", "lantern", "blueFirstHalfKey", "blueSecondHalfKey", "divingSuit", "campfire"],
+            "contents": ["knife", "tupperware", "lantern", "blueFirstHalfKey", "blueSecondHalfKey", "divingSuit", "campfire", "potatoe"],   
             "trait": "None"
         },
         "observatory": {

@@ -908,16 +908,19 @@ function sceneMidQuest() {
         {
             label: "Here, I brought you an apple.",
             value: "give_apple",
-            condition: (world) => playerHasItem(world, "apple")
+            condition: (world) => playerHasItem(world, "potatoe")
         }
     ], function (value) {
         if (value === "give_apple") {
-            consumePlayerItem(world, "apple");
-            world.quests.setStage(DEMO_QUEST_ID, "path_revealed");
-            world.dialog.say(
-                "Thank you, my friend. A deal is a deal: there is a warm glow to the south. " +
-                "Say hello to it for me, would you?"
-            );
+            if (giveItem("potatoe")) {
+                world.quests.setStage(DEMO_QUEST_ID, "path_revealed");
+                world.dialog.say(
+                    "Thank you, my friend. A deal is a deal: there is a warm glow to the south. " +
+                    "Say hello to it for me, would you?"
+                );
+            } else {
+                world.dialog.say("Empty hands, little wanderer. Do not offer what you do not carry.");
+            }
         } else {
             world.dialog.say("Take your time. I'm not going anywhere.");
         }
@@ -944,4 +947,35 @@ function consumePlayerItem(world, itemId) {
     if (idx === -1) return;
     world.player.contents.splice(idx, 1);
     if (typeof renderInventory === "function") renderInventory();
+}
+
+
+//Inventory-Dialogue Integration - Sanika
+
+// Conversation Item Integration
+// Lets dialogue use existing inventory helpers during conversations.
+
+function giveItem(itemId) {
+    if (!playerHasItem(world, itemId)) {
+        return false;
+    }
+
+    removeItem(itemId);
+    renderInventory();
+    return true;
+}
+
+function receiveItem(itemId) {
+    if (!world.items.get(itemId)) {
+        console.log("receiveItem failed. Item does not exist:", itemId);
+        return false;
+    }
+
+    if (playerHasItem(world, itemId)) {
+        return false;
+    }
+
+    addItem(itemId);
+    renderInventory();
+    return true;
 }
