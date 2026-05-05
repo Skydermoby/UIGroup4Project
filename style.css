@@ -19,7 +19,7 @@
     font-size: 1.2em;
 }
 
-.room-contents{
+.room-contents, .special-room-contents{
     padding-top: 2em;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 1.2em;
@@ -112,7 +112,7 @@
 
 .dropdown:hover .dropdown-content, .dropdown-clicked .dropdown-content {display: block;}
 
-.dropdown:hover .room-item, .dropdown-clicked .dropdown-content {background-color: #fee8a6;}
+.dropdown:hover .room-item, .dropdown-clicked .dropdown-content, .room-item:hover {background-color: #fee8a6;}
 
 .dropdown-action:hover {background-color: #b4b4b4;}
 

@@ -13,7 +13,7 @@
             },
             "contents": [],
             "special-contents": [],
-            "quest": ["Tutorial", "End"],
+            "quest": ["Tutorial"],
             "trait": "Dark"
         },
         "cabinDesk": {
@@ -74,7 +74,7 @@
             },
             "contents": [],
             "special-contents": [],
-            "quest": [],
+            "quest": ["Riddle"],
             "trait": "Dark"
         },
         "riddleOne": {
@@ -134,7 +134,7 @@
             },
             "contents": ["riddle1RightSign"],
             "special-contents": [],
-            "quest": [],
+            "quest": ["Riddle"],
             "trait": "Dark"
         },
         "riddleTwo": {
@@ -194,7 +194,7 @@
             },
             "contents": ["riddle2RightSign"],
             "special-contents": [],
-            "quest": [],
+            "quest": ["Riddle"],
             "trait": "Dark"
         },
         "riddleThree": {
@@ -254,7 +254,7 @@
             },
             "contents": ["riddle3RightSign"],
             "special-contents": [],
-            "quest": [],
+            "quest": ["Riddle"],
             "trait": "Dark"
         },
         "theCampfire": {
@@ -264,8 +264,8 @@
             "exits": {
                 "north":"theRiver",
                 "east": "theOrchard",
-                "south": "thePlayground",
-                "west": "riddleThree"
+                "south": "riddleThree",
+                "west": "thePlayground"
             },
             "locks": {
                 "theOrchard": "Key"
@@ -281,7 +281,7 @@
             "description": "Across a raging river, you notice a bright light",
             "exits": {
                 "north":"theExit",
-                "south": "thePlayground"
+                "south": "theCampfire"
             },
             "locks": {
                 "theExit": "Swim"
@@ -296,8 +296,8 @@
             "name": "Playground",
             "description": "You stand at the entrance of a playground, it's very hard to not notice the long pair of legs next to you",
             "exits": {
-                "east": "merryGoround",
-                "west": "theCampfire"
+                "west": "merryGoround",
+                "east": "theCampfire"
             },
             "locks": {
             },
@@ -328,7 +328,7 @@
             "name": "Slide",
             "description": "A slide, it's too dark, and someting wet is on the steps so, no thanks",
             "exits": {
-                "east": "jungleGym",
+                "west": "jungleGym",
                 "south": "merryGoround"
             },
             "locks": {
@@ -561,7 +561,8 @@
             "name": "Shelf Box 4",
             "description": "Just a box, maybe look inside it?",
             "trait": "Stuck",
-            "Addendum": ["Look", "cabinKey"]
+            "Addendum": ["Look", "cabinKey"],
+            "Quest": "Tutorial"
         },
         "cbox5": {
             "id": "cbox5",
@@ -626,6 +627,13 @@
             "trait": "None",
             "Addendum": "None"
         },
+        "apple": {
+            "id": "apple",
+            "name": "Apple",
+            "description": "A honeycrisp red apple, your brother's favorite",
+            "trait": "None",
+            "Addendum": "None"
+        },
         "cabinBook": {
             "id": "cabinBook",
             "name": "Dusty Book",
@@ -659,7 +667,8 @@
             "name": "Key",
             "description": "A gold key that has an odd smell, it must be the spare for the cabin door",
             "trait": "Key",
-            "Addendum": "clearing"
+            "Addendum": "clearing",
+            "Quest": "Tutorial"
         },
         "blueFirstHalfKey": {
             "id": "blueFirstHalfKey",
@@ -687,7 +696,8 @@
             "name": "Lantern",
             "description": "It's a lantern, seems to still work",
             "trait": "Lantern",
-            "Addendum": "100"
+            "Addendum": "100",
+            "Quest": "Tutorial"
         },
         "slingshot": {
             "id": "slingshot",

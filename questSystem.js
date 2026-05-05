@@ -210,6 +210,17 @@ class QuestSystem {
         if (quest.isComplete()) this._emit("onQuestComplete", { quest });
     }
 
+    //Aaron helper function
+    nextStage(questId) {
+        const quest = this.quests[questId];
+        if (!quest) return;
+        quest.currentIndex = Math.max(quest.currentIndex+1, 0);
+        this._render();
+        this._emit("onStageChange", { quest, stage: quest.getCurrentStage() });
+        if (quest.isComplete()) this._emit("onQuestComplete", { quest });
+    }
+
+
     completeQuest(questId) {
         const quest = this.quests[questId];
         if (!quest || quest.stages.length === 0 || quest.isComplete()) return;

@@ -33,11 +33,13 @@ class Container extends GameObject {
 }
 
 class Room extends Container {
-    constructor (id, name, description, parent, contents, exits, locks, trait) {
+    constructor (id, name, description, parent, contents, exits, locks, trait, special, quest) {
         super(id, name, description, parent, contents);
         this.exits = exits
         this.locks = locks
         this.trait = trait
+        this.special = special
+        this.quest = quest
     }
 
     setExit(direction, room) {
@@ -50,11 +52,12 @@ class Room extends Container {
 }
 
 class Item extends GameObject {
-    constructor(id, name, description, parent, actions, trait, addendum) {
+    constructor(id, name, description, parent, actions, trait, addendum, quest) {
         super(id, name, description, parent);
         this.actions = actions
         this.trait = trait
         this.addendum = addendum
+        this.quest = quest
     }
     getDesc() {
         return this.description
@@ -110,6 +113,7 @@ const westButtonEl = document.getElementById("west-button")
 
 const roomContentsEl = document.getElementById("room-contents")
 const inventorContentEl = document.getElementById("inventory-contents")
+const specialRoomContentsEl = document.getElementById("special-room-contents")
 
 const lanternEl = document.getElementById("lantern-level")
 const audioEl = document.getElementById("room-audio")
@@ -136,6 +140,10 @@ function onNorthClick() {
     }
     else {
         diminishLight()
+        if (world.currentRoom.quest.length != 0) {
+            world.quests.nextStage(world.currentRoom.quest[0]);
+            world.currentRoom.quest.pop()
+        }
         world.currentRoom = world.currentRoom["exits"].get("north");
         messageAreaEl.textContent = "You entered the " + roomName;
         render();
@@ -253,8 +261,45 @@ function clearRoomContents() {
     roomContentsEl.replaceChildren();
 }
 
+function clearSpecialContents() {
+    specialRoomContentsEl.replaceChildren();
+}
+
+function handleSpecial(special){
+    if (special === "TallMan") {
+        specialRoomContentsEl.append("You also see ")
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "room-item";
+        btn.textContent = "A very long pair of legs";
+        
+        btn.addEventListener("click", function (){openLongNeckedManDialog()});
+
+        specialRoomContentsEl.appendChild(btn);
+    }
+    else if (special === "AppleTree") {
+        specialRoomContentsEl.append("You also see ")
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "room-item";
+        btn.textContent = "A smiling apple tree";
+        
+        btn.addEventListener("click", function (){openTreeDialog()});
+
+        specialRoomContentsEl.appendChild(btn);
+    }
+    else if (special === "TheEnd") {
+        specialRoomContentsEl.append("THE END");
+    }
+}
+
 function renderRoomContents(room) {
     roomContentsEl.replaceChildren();
+    specialRoomContentsEl.replaceChildren();
+    const specials = room.special
+    if (typeof specials !== "undefined") {
+        handleSpecial(specials)
+    }
     const ids = room.contents ?? [];
     if (ids.length === 0) {
         roomContentsEl.textContent = "You found everything there was to find here.";
@@ -358,7 +403,7 @@ function createItemButton(item) {
         hoverMenu.appendChild(cfButton);
     }
     else if (item.trait == "Sign") {
-        
+
     }
     else {
         const takeButton = document.createElement("button");
@@ -401,6 +446,10 @@ function takeObject(itemId) {
     if (heldItem.trait == "Combine") {
         world.combineInventory.push(heldItem)
     }
+    if (typeof heldItem.quest != "undefined") {
+        world.quests.nextStage(heldItem.quest);
+        heldItem.quest = undefined
+    }
     console.log(world.player.contents)
     console.log(world.combineInventory)
     renderRoomContents(world.currentRoom);
@@ -438,6 +487,10 @@ function interactObject(item) {
         else{
             addItem(item.addendum[1])
             messageAreaEl.textContent = messageAreaEl.textContent + ", you got a " + item.addendum[1] + "!"
+            if (typeof item.quest != "undefined") {
+                world.quests.nextStage(item.quest);
+                item.quest = undefined
+            }
         }
     }
 }
@@ -595,21 +648,22 @@ function addItem(itemId) {
 }
 
 function removeItem(itemId) {
-    const roomContent = world.currentRoom.contents
+    const roomContent = world.items
     const index = world.player.contents.indexOf(world.items.get(itemId));
     const heldItem = world.player.contents[index]
-    heldItem.parent = world.currentRoom
     console.log(heldItem)
     if (index != -1) {
         world.player.contents.splice(index, 1);
         if (heldItem.trait == "Combine") {
-            world.combineInventory.splice(index, 1);
+            const indexComb = world.combineInventory.indexOf(world.items.get(itemId));
+            world.combineInventory.splice(indexComb, 1);
         }
     }
     else {
         console.log("Item Not Found");
     }
 }
+
 
 
 function combineItems(item1, item2) {
@@ -732,7 +786,7 @@ async function init() {
     world.rooms = new Map();
     world.items = new Map();
     for (var item in db.items) {
-        const nextItem = new Item(db.items[item]["id"],db.items[item]["name"],db.items[item]["description"], null, null, db.items[item]["trait"], db.items[item]["Addendum"]);
+        const nextItem = new Item(db.items[item]["id"],db.items[item]["name"],db.items[item]["description"], null, null, db.items[item]["trait"], db.items[item]["Addendum"], db.items[item]["Quest"]);
         world.items.set(db.items[item]["id"], nextItem);
     }
     for (var room in db.rooms) {
@@ -741,7 +795,15 @@ async function init() {
             console.log(db.rooms[room]["contents"][item])
             roomInv.push(world.items.get(db.rooms[room]["contents"][item]))
         }
-        const nextRoom = new Room(db.rooms[room]["id"], db.rooms[room]["name"], db.rooms[room]["description"], null, roomInv, [], [], db.rooms[room]["trait"]);
+        let special = undefined
+        if (db.rooms[room]["special-contents"].length != 0) {
+            special = db.rooms[room]["special-contents"][0]
+        }
+        let quest = []
+        if (db.rooms[room]["quest"].length != 0) {
+            quest.push(db.rooms[room]["quest"][0])
+        } 
+        const nextRoom = new Room(db.rooms[room]["id"], db.rooms[room]["name"], db.rooms[room]["description"], null, roomInv, [], [], db.rooms[room]["trait"], special, quest);
         world.rooms.set(db.rooms[room]["id"], nextRoom);
     }
     for (var room in db.rooms) {
@@ -776,6 +838,63 @@ init().then(setupDialogAndQuestDemo).catch(function (err) {
     setupDialogAndQuestDemo(); // systems run standalone even if world fails
 });
 
+// FOR SHRESTA: Put all your dialog here, thx
+
+const Diag1 = "Placeholder1"
+const Diag2 = "Placeholder2"
+const Diag3 = "Placeholder3"
+const Diag4 = "Placeholder4"
+const Diag5 = "Placeholder5"
+const Diag6 = "Placeholder6"
+const Diag7 = "Placeholder7"
+const Diag8 = "Placeholder8"
+const Diag9 = "Placeholder9"
+const Diag10 = "Placeholder10"
+const Diag11 = "Placeholder11"
+const Diag12 = "Placeholder12"
+const Diag13 = "Placeholder13"
+const Diag14 = "Placeholder14"
+const Diag15 = "Placeholder15"
+const Diag16 = "Placeholder16"
+const Diag17 = "Placeholder17"
+const Diag18 = "Placeholder18"
+const Diag19 = "Placeholder19"
+
+//End of dialog storage
+
+const debugMode = true
+
+const TUTORIAL_QUEST_ID = "Tutorial";
+const RIDDLE_QUEST_ID = "Riddle";
+
+function defineTutorialQuest() {
+    world.quests.defineQuest({
+        id: TUTORIAL_QUEST_ID,
+        title: "Tutorial",
+        description: "Basics",
+        stages: [
+            { id: "find_light",           description: "It's dark, find a light source" },
+            { id: "find_key",    description: "Find a key to get out the cabin" },
+            { id: "find_leave", description: "Okay, now use the key and get out" },
+            { id: "left", description: "Good, You're on your own now" }
+        ]
+    });
+}
+
+function defineRiddleQuest() {
+    world.quests.defineQuest({
+        id: RIDDLE_QUEST_ID,
+        title: "The Riddle Roads",
+        description: "What has rings without having fingers, and leaves without going anywhere",
+        stages: [
+            { id: "riddle1",           description: "Solve the first riddle and go through the right path" },
+            { id: "riddle2", description: "Solve the second riddle and go through the right path" },
+            { id: "riddle3", description: "Solve the third riddle and go through the right path" },
+            { id: "passed", description: "Don't worry, we're done with riddles, for now..." }
+        ]
+    });
+}
+
 
 // ============================================================
 // Dialog + Quest wiring (Backlog #4, #5, #13)
@@ -786,6 +905,9 @@ init().then(setupDialogAndQuestDemo).catch(function (err) {
 const DEMO_QUEST_ID = "demo-long-necked-man";
 const DEMO_NPC = { id: "long_necked_man", name: "Long-Necked Man" };
 
+const TREE_QUEST_ID = "apple-tree";
+const TREE_NPC = { id: "apple_tree", name: "The Apple Tree" };
+
 function defineDemoQuest() {
     world.quests.defineQuest({
         id: DEMO_QUEST_ID,
@@ -794,7 +916,22 @@ function defineDemoQuest() {
         stages: [
             { id: "met",           description: "Spoke to the Long-Necked Man." },
             { id: "find_apple",    description: "Find an apple to bring back to him." },
-            { id: "path_revealed", description: "He pointed you toward the southern glow." }
+            { id: "path_revealed", description: "He hands you the diving suit and asks wishes of luck to you." }
+        ]
+    });
+}
+
+function defineTreeQuest() {
+    world.quests.defineQuest({
+        id: TREE_QUEST_ID,
+        title: "The Apple Tree",
+        description: "What has rings without having fingers, and leaves without going anywhere",
+        stages: [
+            { id: "met",           description: "Spoke to the Apple Tree" },
+            { id: "answer_riddle1",    description: "Answer the first riddle" },
+            { id: "answer_riddle2", description: "Answer the second riddle" },
+            { id: "answer_riddle3", description: "Answer the third riddle" },
+            { id: "apple_received", description: "An apple gotten, time to give it back" }
         ]
     });
 }
@@ -803,6 +940,10 @@ function setupDialogAndQuestDemo() {
     world.dialog = new DialogSystem(world);
     world.quests = new QuestSystem(world);
     defineDemoQuest();
+    defineTreeQuest();
+    defineTutorialQuest();
+    defineRiddleQuest();
+    world.quests.setStage(TUTORIAL_QUEST_ID, "find_light");
 
     // Dev logging so integrators can see the events their hooks will receive
     world.dialog.on("onResponse", (p) => console.log("[dialog] response:", p));
@@ -812,6 +953,9 @@ function setupDialogAndQuestDemo() {
     const demoBtn = document.getElementById("dialog-demo-btn");
     if (demoBtn) demoBtn.addEventListener("click", openLongNeckedManDialog);
 
+    const treeBtn = document.getElementById("dialog-tree-btn");
+    if (treeBtn) treeBtn.addEventListener("click", openTreeDialog);
+
     const resetBtn = document.getElementById("quest-demo-reset-btn");
     if (resetBtn) resetBtn.addEventListener("click", function () {
         defineDemoQuest();
@@ -819,6 +963,144 @@ function setupDialogAndQuestDemo() {
     });
 }
 
+
+function openTreeDialog() {
+    world.dialog.startDialog(TREE_NPC);
+
+    // Branch by quest stage (first-meeting / mid-quest / post-completion pools)
+    const stage = world.quests.getStage(TREE_QUEST_ID);
+    const stageId = stage ? stage.id : null;
+
+    if (world.quests.isComplete(TREE_QUEST_ID))   scenePostTreeQuest();
+    else if (stageId === "answer_riddle1")            sceneRiddle1();
+    else if (stageId === "answer_riddle2")            sceneRiddle2();
+    else if (stageId === "answer_riddle3")            sceneRiddle3();
+    else                                          sceneFirstTreeMeeting();
+}
+
+function sceneFirstTreeMeeting() {
+    world.dialog.say(Diag13);
+    world.quests.setStage(TREE_QUEST_ID, "met");
+    world.dialog.setChoices([
+        { label: Diag14,                    value: "forgot" },
+        { label: Diag15, value: "ask_path" }
+    ], function (value) {
+        if (value === "forgot") {
+            world.dialog.say(Diag16);
+            world.dialog.setChoices([ { label: Diag15, value: "ask_path" }], function () { sceneRiddle1()});
+            world.dialog.addLeaveOption();
+        }
+        if (value === "ask_path") sceneRiddle1();
+    });
+    world.dialog.addLeaveOption();
+}
+
+const RIDDLE1_ANSWERS = ["cold", "colds", "sickness", "a cold"];
+const isRiddle1Correct = (answer) => RIDDLE1_ANSWERS.includes(answer.toLowerCase().trim());
+
+function sceneRiddle1() {
+    console.log("this")
+    world.dialog.say(
+        "What can you catch, but not throw?"
+    );
+    console.log("this")
+    world.dialog.setFreeTextInput("Type your answer", handleRiddle1Answer);
+}
+
+function sceneRiddle1Retry() {
+    world.dialog.say("No, no... think harder. What can you catch, but not throw?");
+    world.dialog.setFreeTextInput("Try again", handleRiddle1Answer);
+}
+
+function handleRiddle1Answer(answer) {
+    console.log("thihs")
+    if (!isRiddle1Correct(answer)) { sceneRiddle1Retry(); return; }
+    if (!world.quests.isActive(TREE_QUEST_ID) && !world.quests.isComplete(TREE_QUEST_ID)) {
+        world.quests.startQuest(TREE_QUEST_ID);
+    }
+    world.quests.setStage(TREE_QUEST_ID, "answer_riddle1");
+    sceneRiddle1Solved();
+}
+
+function sceneRiddle1Solved() {
+    world.dialog.say(
+        Diag17
+    );
+    world.dialog.setChoices([
+        { label: "I'm ready for the second puzzle",             value: "clarify" }
+    ], function (value) {
+        sceneRiddle2();
+    });
+}
+
+const RIDDLE2_ANSWERS = ["clock", "clocks", "the clock", "a clock"];
+const isRiddle2Correct = (answer) => RIDDLE2_ANSWERS.includes(answer.toLowerCase().trim());
+
+function sceneRiddle2() {
+    world.dialog.say(
+        "What has hands but cannot clap?"
+    );
+    world.dialog.setFreeTextInput("Type your answer", handleRiddle2Answer);
+}
+
+function sceneRiddle2Retry() {
+    world.dialog.say("No, no... think harder. What has hands but cannot clap?");
+    world.dialog.setFreeTextInput("Try again", handleRiddle2Answer);
+}
+
+function handleRiddle2Answer(answer) {
+    if (!isRiddle2Correct(answer)) { sceneRiddle2Retry(); return; }
+    if (!world.quests.isActive(TREE_QUEST_ID) && !world.quests.isComplete(TREE_QUEST_ID)) {
+        world.quests.startQuest(TREE_QUEST_ID);
+    }
+    world.quests.setStage(TREE_QUEST_ID, "answer_riddle2");
+    sceneRiddle2Solved();
+}
+
+function sceneRiddle2Solved() {
+    world.dialog.say(
+        Diag18
+    );
+    world.dialog.setChoices([
+        { label: "I'm ready for the third puzzle",             value: "clarify" }
+    ], function (value) {
+        sceneRiddle3();
+    });
+}
+
+const RIDDLE3_ANSWERS = ["redpaint", "redpaints", "red paint", "red paints", "the redpaint", "the redpaints", "the red paint", "the red paints"];
+const isRiddle3Correct = (answer) => RIDDLE3_ANSWERS.includes(answer.toLowerCase().trim());
+
+function sceneRiddle3() {
+    world.dialog.say(
+        "What is red and smells like blue paint?"
+    );
+    world.dialog.setFreeTextInput("Type your answer", handleRiddle3Answer);
+}
+
+function sceneRiddle3Retry() {
+    world.dialog.say("No, no... think harder. What is red and smells like blue paint?");
+    world.dialog.setFreeTextInput("Try again", handleRiddle3Answer);
+}
+
+function handleRiddle3Answer(answer) {
+    if (!isRiddle3Correct(answer)) { sceneRiddle3Retry(); return; }
+    if (!world.quests.isActive(TREE_QUEST_ID) && !world.quests.isComplete(TREE_QUEST_ID)) {
+        world.quests.startQuest(TREE_QUEST_ID);
+    }
+    world.quests.nextStage(TREE_QUEST_ID);
+    sceneRiddle3Solved();
+}
+
+function sceneRiddle3Solved() {
+    receiveItem("apple")
+    world.dialog.say(
+        Diag19
+    );
+    world.quests.nextStage(TREE_QUEST_ID);
+    world.dialog.addLeaveOption("Thank You, Goodbye");
+    ;
+}
 
 // ============================================================
 // Demo dialog flow (Long-Necked Man)
@@ -841,64 +1123,24 @@ function openLongNeckedManDialog() {
 }
 
 function sceneFirstMeeting() {
-    world.dialog.say("Well, well... and who might you be, little one?");
+    world.dialog.say(Diag1);
     world.dialog.setChoices([
-        { label: "I... I don't remember.",                    value: "forgot" },
-        { label: "Can you tell me where the next campfire is?", value: "ask_path" }
+        { label: Diag2,                    value: "forgot" },
+        { label: Diag3, value: "ask_path" }
     ], function (value) {
-        if (value === "forgot")   sceneRiddle();
+        if (value === "forgot") {
+            world.dialog.say(Diag4);
+            world.dialog.setChoices([ { label: Diag3, value: "ask_path" }], function () { sceneApplePath()});
+            world.dialog.addLeaveOption();
+        }
         if (value === "ask_path") sceneApplePath();
     });
     world.dialog.addLeaveOption();
 }
 
-const RIDDLE_ANSWERS = ["name", "my name", "your name", "a name"];
-const isRiddleCorrect = (answer) => RIDDLE_ANSWERS.includes(answer.toLowerCase().trim());
-
-function sceneRiddle() {
-    world.dialog.say(
-        "A traveler without a name. How quaint. Perhaps a riddle will jog your memory:\n" +
-        "What do you have that others use more than you do?"
-    );
-    world.dialog.setFreeTextInput("Type your answer", handleRiddleAnswer);
-}
-
-function sceneRiddleRetry() {
-    world.dialog.say("No, no... think harder. What do you have that others use more than you do?");
-    world.dialog.setFreeTextInput("Try again", handleRiddleAnswer);
-}
-
-function handleRiddleAnswer(answer) {
-    if (!isRiddleCorrect(answer)) { sceneRiddleRetry(); return; }
-    if (!world.quests.isActive(DEMO_QUEST_ID) && !world.quests.isComplete(DEMO_QUEST_ID)) {
-        world.quests.startQuest(DEMO_QUEST_ID);
-    }
-    world.quests.setStage(DEMO_QUEST_ID, "path_revealed");
-    sceneRiddleSolved();
-}
-
-function sceneRiddleSolved() {
-    world.dialog.say(
-        "Clever little one. The path south is yours. " +
-        "I saw a warm glow coming from down that way. Say hello to it for me, would you?"
-    );
-    world.dialog.setChoices([
-        { label: "Thank you. I'll be on my way.", value: "thanks" },
-        { label: "What do you mean?",             value: "clarify" }
-    ], function (value) {
-        const reply = (value === "clarify")
-            ? "Look for the lantern to guide your way, child."
-            : "Cautious travels.";
-        world.dialog.say(reply);
-        world.dialog.setChoices([], null);
-        world.dialog.addLeaveOption("Goodbye");
-    });
-}
-
 function sceneApplePath() {
     world.dialog.say(
-        "Of course. But I'd appreciate a small favor first - it has been so long since I tasted an apple. " +
-        "Bring me one, and I'll tell you everything."
+        Diag5
     );
     if (!world.quests.isActive(DEMO_QUEST_ID) && !world.quests.isComplete(DEMO_QUEST_ID)) {
         world.quests.startQuest(DEMO_QUEST_ID);
@@ -906,9 +1148,9 @@ function sceneApplePath() {
     world.quests.setStage(DEMO_QUEST_ID, "find_apple");
 
     world.dialog.setChoices([
-        { label: "I'll find you one.", value: "agree" }
+        { label: Diag6, value: "agree" }
     ], function () {
-        world.dialog.say("Wonderful. I'll be waiting right here.");
+        world.dialog.say(Diag7);
         world.dialog.setChoices([], null);
         world.dialog.addLeaveOption();
     });
@@ -916,29 +1158,28 @@ function sceneApplePath() {
 }
 
 function sceneMidQuest() {
-    world.dialog.say("Have you brought me an apple, little wanderer?");
+    world.dialog.say(Diag8);
     world.dialog.setChoices([
-        { label: "Not yet. I'm still looking.", value: "not_yet" },
+        { label: Diag9, value: "not_yet" },
         // Inventory-gated: hidden when player has no apple (per spec)
         {
-            label: "Here, I brought you an apple.",
+            label: Diag10,
             value: "give_apple",
-            condition: (world) => playerHasItem(world, "potatoe")
+            condition: (world) => playerHasItem(world, "apple")
         }
     ], function (value) {
         if (value === "give_apple") {
-            if (giveItem("potatoe")) {
+            if (giveItem("apple")) {
                 world.quests.setStage(DEMO_QUEST_ID, "path_revealed");
                 world.dialog.say(
-                    "Thank you, my friend. A deal is a deal: there is a warm glow to the south. " +
-                    "Say hello to it for me, would you?"
+                    Diag12
                 );
                 receiveItem("divingHelmet")
             } else {
                 world.dialog.say("Empty hands, little wanderer. Do not offer what you do not carry.");
             }
         } else {
-            world.dialog.say("Take your time. I'm not going anywhere.");
+            world.dialog.say(Diag11);
         }
         world.dialog.setChoices([], null);
         world.dialog.addLeaveOption(value === "give_apple" ? "Goodbye" : "Leave");
@@ -946,7 +1187,7 @@ function sceneMidQuest() {
 }
 
 function scenePostQuest() {
-    world.dialog.say("Safe travels, little wanderer. The path south remains open.");
+    world.dialog.say("Safe travels, little wanderer.");
     world.dialog.setChoices([], null);
     world.dialog.addLeaveOption("Farewell");
 }
@@ -988,6 +1229,7 @@ function receiveItem(itemId) {
     }
 
     if (playerHasItem(world, itemId)) {
+        console.log("Player already as item")
         return false;
     }
 
