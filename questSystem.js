@@ -81,7 +81,13 @@ class QuestSystem {
 
         panel.appendChild(header);
         panel.appendChild(body);
-        document.body.appendChild(panel);
+        // Mount at top of #side-panel when present; fall back to <body>.
+        const sidePanel = document.getElementById("side-panel");
+        if (sidePanel) {
+            sidePanel.insertBefore(panel, sidePanel.firstChild);
+        } else {
+            document.body.appendChild(panel);
+        }
 
         toggle.addEventListener("click", () => {
             const collapsed = panel.classList.toggle("collapsed");

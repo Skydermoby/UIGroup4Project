@@ -116,7 +116,8 @@ const inventorContentEl = document.getElementById("inventory-contents")
 const specialRoomContentsEl = document.getElementById("special-room-contents")
 
 const lanternEl = document.getElementById("lantern-level")
-const audioEl = document.getElementById("room-audio")
+const audioEl = document.getElementById("ambient-audio")
+const musicToggleEl = document.getElementById("music-toggle")
 
 const bodyEl = document.getElementsByTagName("BODY")[0]
 
@@ -466,7 +467,9 @@ function dropObject(itemId) {
     if (index != -1) {
         world.player.contents.splice(index, 1);
         if (heldItem.trait == "Combine") {
-            world.combineInventory.splice(index, 1);
+            // combineInventory has its own index, not the player-contents one
+            const cIdx = world.combineInventory.indexOf(heldItem);
+            if (cIdx !== -1) world.combineInventory.splice(cIdx, 1);
         }
     }
     else {
@@ -500,25 +503,17 @@ function renderInventory() {
     inventorContentEl.replaceChildren();
     const ids = world.player.contents ?? [];
     if (ids.length === 0) {
-        inventorContentEl.textContent = "Your inventory is empty";
+        const empty = document.createElement("div");
+        empty.className = "inventory-empty";
+        empty.textContent = "Empty.";
+        inventorContentEl.appendChild(empty);
         return;
     }
 
-    inventorContentEl.append("In your inventory: ");
-    console.log(ids)
-    ids.forEach((itemId, index) => {
-        const item = itemId;
-        if (!item){
-            console.log("sadge")
-            return;
-        }
+    ids.forEach((item) => {
+        if (!item) return;
         inventorContentEl.appendChild(createInventoryButton(item));
-
-        if (index < ids.length  - 1)
-            inventorContentEl.append(", ");
-        else
-            inventorContentEl.append(".");
-    })
+    });
 }
 
 function createInventoryButton(item) {
@@ -766,15 +761,59 @@ function changeLanternLevel(changeNumber) {
     lanternEl.value = world.illuminationLevel
 }
 
+// Ambient music: low-volume loop with autoplay-safe start and a mute toggle.
 function playPause() {
-    if (world.playingAudio == false) {
-        audioEl.play()
-        world.playingAudio = true
+    if (!audioEl) return;
+    if (audioEl.paused) {
+        const p = audioEl.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
+        world.playingAudio = true;
+    } else {
+        audioEl.pause();
+        world.playingAudio = false;
     }
-    else {
-        audioEl.pause()
-        world.playingAudio = false
+    updateMusicToggleUI();
+}
+
+function updateMusicToggleUI() {
+    if (!musicToggleEl) return;
+    const playing = audioEl && !audioEl.paused;
+    musicToggleEl.classList.toggle("muted", !playing);
+    musicToggleEl.setAttribute("aria-pressed", playing ? "true" : "false");
+    musicToggleEl.title = playing ? "Mute music" : "Play music";
+}
+
+function initAmbientMusic() {
+    if (!audioEl) return;
+    audioEl.volume = 0.06; // intentionally subtle
+    audioEl.loop = true;
+
+    // Try once; browsers may block until the user interacts.
+    const tryStart = audioEl.play();
+    if (tryStart && typeof tryStart.catch === "function") tryStart.catch(() => {});
+
+    // Fallback: start on first user gesture. Skip the music toggle itself
+    // so its click handler stays the source of truth.
+    const startOnInteract = (e) => {
+        if (musicToggleEl && e && e.target && musicToggleEl.contains(e.target)) return;
+        if (audioEl.paused) {
+            const p = audioEl.play();
+            if (p && typeof p.catch === "function") p.catch(() => {});
+        }
+        updateMusicToggleUI();
+        document.removeEventListener("pointerdown", startOnInteract);
+        document.removeEventListener("keydown", startOnInteract);
+    };
+    document.addEventListener("pointerdown", startOnInteract);
+    document.addEventListener("keydown", startOnInteract);
+
+    if (musicToggleEl) {
+        musicToggleEl.addEventListener("click", (e) => {
+            e.stopPropagation();
+            playPause();
+        });
     }
+    updateMusicToggleUI();
 }
 
 
@@ -833,9 +872,9 @@ async function init() {
     render();
 }
 
-init().then(setupDialogAndQuestDemo).catch(function (err) {
+init().then(setupDialogAndQuestSystems).catch(function (err) {
     console.error("Init failed:", err);
-    setupDialogAndQuestDemo(); // systems run standalone even if world fails
+    setupDialogAndQuestSystems();
 });
 
 // FOR SHRESTA: Put all your dialog here, thx
@@ -861,8 +900,6 @@ const Diag18 = "Placeholder18"
 const Diag19 = "Placeholder19"
 
 //End of dialog storage
-
-const debugMode = true
 
 const TUTORIAL_QUEST_ID = "Tutorial";
 const RIDDLE_QUEST_ID = "Riddle";
@@ -899,18 +936,18 @@ function defineRiddleQuest() {
 // ============================================================
 // Dialog + Quest wiring (Backlog #4, #5, #13)
 // Owner: Abhishek Subramanian
-// Instantiates the systems on `world` and binds the demo trigger.
+// Instantiates the dialog/quest systems and registers all quests.
 // ============================================================
 
-const DEMO_QUEST_ID = "demo-long-necked-man";
-const DEMO_NPC = { id: "long_necked_man", name: "Long-Necked Man" };
+const LONGNECKED_QUEST_ID = "long-necked-man";
+const LONGNECKED_NPC = { id: "long_necked_man", name: "Long-Necked Man" };
 
 const TREE_QUEST_ID = "apple-tree";
 const TREE_NPC = { id: "apple_tree", name: "The Apple Tree" };
 
-function defineDemoQuest() {
+function defineLongNeckedManQuest() {
     world.quests.defineQuest({
-        id: DEMO_QUEST_ID,
+        id: LONGNECKED_QUEST_ID,
         title: "The Long-Necked Man",
         description: "A pale figure in the clearing seems to want something from you.",
         stages: [
@@ -936,31 +973,21 @@ function defineTreeQuest() {
     });
 }
 
-function setupDialogAndQuestDemo() {
+function setupDialogAndQuestSystems() {
     world.dialog = new DialogSystem(world);
     world.quests = new QuestSystem(world);
-    defineDemoQuest();
+    defineLongNeckedManQuest();
     defineTreeQuest();
     defineTutorialQuest();
     defineRiddleQuest();
     world.quests.setStage(TUTORIAL_QUEST_ID, "find_light");
 
-    // Dev logging so integrators can see the events their hooks will receive
+    // Diagnostics
     world.dialog.on("onResponse", (p) => console.log("[dialog] response:", p));
     world.quests.on("onStageChange", (p) => console.log("[quest] stage change:", p.quest.id, "->", p.stage));
     world.quests.on("onQuestComplete", (p) => console.log("[quest] complete:", p.quest.id));
 
-    const demoBtn = document.getElementById("dialog-demo-btn");
-    if (demoBtn) demoBtn.addEventListener("click", openLongNeckedManDialog);
-
-    const treeBtn = document.getElementById("dialog-tree-btn");
-    if (treeBtn) treeBtn.addEventListener("click", openTreeDialog);
-
-    const resetBtn = document.getElementById("quest-demo-reset-btn");
-    if (resetBtn) resetBtn.addEventListener("click", function () {
-        defineDemoQuest();
-        console.log("[quest] demo quest reset");
-    });
+    initAmbientMusic();
 }
 
 
@@ -1099,27 +1126,30 @@ function sceneRiddle3Solved() {
     );
     world.quests.nextStage(TREE_QUEST_ID);
     world.dialog.addLeaveOption("Thank You, Goodbye");
-    ;
+}
+
+// Required by openTreeDialog when the tree quest is complete.
+function scenePostTreeQuest() {
+    world.dialog.say("The smiling tree rustles softly. It seems content with you now.");
+    world.dialog.setChoices([], null);
+    world.dialog.addLeaveOption("Farewell");
 }
 
 // ============================================================
-// Demo dialog flow (Long-Necked Man)
+// Long-Necked Man dialog flow
 // Owner: Abhishek Subramanian
-// Exercises every dialog primitive: say, multi-choice, free-text,
-// gated choices, leave, and quest stage advancement.
-// Other team members can replace this with real game content.
+// Branches on quest stage so the NPC remembers prior meetings.
 // ============================================================
 
 function openLongNeckedManDialog() {
-    world.dialog.startDialog(DEMO_NPC);
+    world.dialog.startDialog(LONGNECKED_NPC);
 
-    // Branch by quest stage (first-meeting / mid-quest / post-completion pools)
-    const stage = world.quests.getStage(DEMO_QUEST_ID);
+    const stage = world.quests.getStage(LONGNECKED_QUEST_ID);
     const stageId = stage ? stage.id : null;
 
-    if (world.quests.isComplete(DEMO_QUEST_ID))   scenePostQuest();
-    else if (stageId === "find_apple")            sceneMidQuest();
-    else                                          sceneFirstMeeting();
+    if (world.quests.isComplete(LONGNECKED_QUEST_ID))   scenePostQuest();
+    else if (stageId === "find_apple")                  sceneMidQuest();
+    else                                                sceneFirstMeeting();
 }
 
 function sceneFirstMeeting() {
@@ -1142,10 +1172,10 @@ function sceneApplePath() {
     world.dialog.say(
         Diag5
     );
-    if (!world.quests.isActive(DEMO_QUEST_ID) && !world.quests.isComplete(DEMO_QUEST_ID)) {
-        world.quests.startQuest(DEMO_QUEST_ID);
+    if (!world.quests.isActive(LONGNECKED_QUEST_ID) && !world.quests.isComplete(LONGNECKED_QUEST_ID)) {
+        world.quests.startQuest(LONGNECKED_QUEST_ID);
     }
-    world.quests.setStage(DEMO_QUEST_ID, "find_apple");
+    world.quests.setStage(LONGNECKED_QUEST_ID, "find_apple");
 
     world.dialog.setChoices([
         { label: Diag6, value: "agree" }
@@ -1170,7 +1200,7 @@ function sceneMidQuest() {
     ], function (value) {
         if (value === "give_apple") {
             if (giveItem("apple")) {
-                world.quests.setStage(DEMO_QUEST_ID, "path_revealed");
+                world.quests.setStage(LONGNECKED_QUEST_ID, "path_revealed");
                 world.dialog.say(
                     Diag12
                 );

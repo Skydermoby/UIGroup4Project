@@ -7,38 +7,45 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <audio id="room-audio">
-        <source src="FALLEN DOWN.wav" type="audio/wav">
-        Your browser does not support the audio element.
-    </audio>
-    <h3 id="room-name" class="room-name"></h3>
-    <div id="room-desc" class="room-desc"></div>
-    <div id="room-contents" class="room-contents"></div>
-    <div id="special-room-contents" class="special-room-contents"></div>
-    <div id="exits-area" class="exits-area">
-        <button id="west-button" class="button"></button>
-        <div id="middle-buttons" class="middle-buttons">
-            <button id="north-button" class="button"></button>
-            <button id="south-button" class="button"></button>
-        </div>
-        <button id="east-button" class="button"></button>
-    </div>
-    <progress id="lantern-level" class="lantern-level" max="100"></progress>
-    <div id="message-area" class="message-area"></div>
-    <div id="inventory-contents" class="inventory-contents"></div>
+    <!-- Subtle ambient soundtrack (loops at low volume; user can mute) -->
+    <audio id="ambient-audio" src="Deathcard Cabin (Reprise).mp3" loop preload="auto"></audio>
 
-    <!-- Dialog + Quest demo trigger (Subramanian, Abhishek - Items #4, #5, #13) -->
-    <div id="dev-demo-bar" class="dev-demo-bar">
-        <span class="dev-demo-label">[DEV]</span>
-        <button id="dialog-demo-btn" type="button" class="dev-demo-btn">
-            Talk to Long-Necked Man (demo)
-        </button>
-        <button id="dialog-tree-btn" type="button" class="dev-tree-btn">
-            Talk to Apple Tree (demo)
-        </button>
-        <button id="quest-demo-reset-btn" type="button" class="dev-demo-btn dev-demo-btn-secondary">
-            Reset demo quest
-        </button>
+    <!-- Music toggle: small, unobtrusive, top-left corner -->
+    <button id="music-toggle" type="button" class="music-toggle" aria-label="Toggle music" aria-pressed="false" title="Toggle music">
+        <span class="music-toggle-icon" aria-hidden="true">&#9834;</span>
+    </button>
+
+    <div class="page-grid">
+        <main class="game-shell">
+            <h3 id="room-name" class="room-name"></h3>
+            <div id="room-desc" class="room-desc"></div>
+            <div id="room-contents" class="room-contents"></div>
+            <div id="special-room-contents" class="special-room-contents"></div>
+
+            <div id="exits-area" class="exits-area">
+                <button id="west-button" class="button"></button>
+                <div id="middle-buttons" class="middle-buttons">
+                    <button id="north-button" class="button"></button>
+                    <button id="south-button" class="button"></button>
+                </div>
+                <button id="east-button" class="button"></button>
+            </div>
+
+            <div class="lantern-wrap">
+                <span class="lantern-label">Lantern</span>
+                <progress id="lantern-level" class="lantern-level" max="100"></progress>
+            </div>
+
+            <div id="message-area" class="message-area"></div>
+        </main>
+
+        <aside id="side-panel" class="side-panel">
+            <!-- Quest log is appended here at runtime by questSystem.js -->
+            <section class="inventory-panel">
+                <h4 class="panel-title">Inventory</h4>
+                <div id="inventory-contents" class="inventory-contents"></div>
+            </section>
+        </aside>
     </div>
 
     <script src="dialogSystem.js"></script>

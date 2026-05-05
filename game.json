@@ -313,7 +313,7 @@
             "exits": {
                 "north":"slide",
                 "east": "thePlayground",
-                "south": "sandbox",
+                "south": "sandBox",
                 "west": "monkeyBars"
             },
             "locks": {

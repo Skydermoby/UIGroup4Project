@@ -1,125 +1,419 @@
-.room-name{
-    background-color: black;
-    color:aliceblue;
-    padding: 1em;
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: bolder;
-    font-size: 1.5em;
+/* ================================================================
+   It Sees - Team 04 - atmospheric stylesheet
+   Palette: deep wood #2a241c, warm panel #3a3024, parchment #4a3d2c,
+            amber #c9a45c, bright ember #ffd789, parchment text #f4e9d0
+   ================================================================ */
+
+/* ---- Base ---- */
+
+* {
+    box-sizing: border-box;
 }
 
-.room-desc{
-    border: 1em;
-    border-color:rgb(47, 58, 79);
-    border-width: 0.4em;
-    border-style: dashed;
-    padding: 1em;
-    padding-top: 2em;
-    padding-bottom: 2em;
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 1.2em;
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
 }
 
-.room-contents, .special-room-contents{
-    padding-top: 2em;
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 1.2em;
-}
-
-.message-area{
-    border-style: dotted;
-    border-width: 0.3em;
-    border-color:bisque;
-    padding: 1em;
-    padding-top: 2em;
-    padding-bottom: 2em;
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-size: 1em;
-    margin-top: 2em;
-    background-color: tan;
-}
-
-.exits-area{
-    display: flex;
-    flex-direction: row;
-    padding: 1em;
-    padding-top: 2em;
-}
-
-.middle-buttons{
+body {
+    /* Warm cabin-at-dusk backdrop. */
+    background-color: #2a241c;
+    background-image:
+        radial-gradient(ellipse at top, rgba(255, 215, 137, 0.10) 0%, transparent 55%),
+        radial-gradient(ellipse at bottom, rgba(80, 60, 30, 0.18) 0%, transparent 60%),
+        linear-gradient(#2a241c 0%, #211c15 100%);
+    background-attachment: fixed;
+    color: #f4e9d0;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    line-height: 1.5;
+    cursor: default;
+    /* Vertically center the page-grid when content is short; allow normal
+       scroll when content is tall. */
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding-left: 0.5em;
-    padding-right:0.5em;
-    
+    justify-content: center;
 }
 
-.button{
-    border: solid;
-    background-color:bisque;
-    height: 3em;
-    width: 10em;
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 1.2em;
-    font-weight: bold;
+/* Vignette overlay (click-through). */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.45) 100%);
+    z-index: 1;
+}
+
+/* ---- Page grid: main story area + side panel ---- */
+
+.page-grid {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 1.5em;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 1.75em 1.5em 1.75em 4.5em; /* left padding clears the music toggle */
+    align-items: start;
+}
+
+.game-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    min-width: 0;
+}
+
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+/* ---- Room name (chapter title) ---- */
+
+.room-name {
+    margin: 0;
+    padding: 0.85em 1em;
+    background: linear-gradient(180deg, #1f1a13 0%, #15110b 100%);
+    color: #ffd789;
+    font-family: 'Cinzel', 'Trajan Pro', 'Franklin Gothic Medium', 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 1.55em;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    text-align: center;
+    border: 1px solid #c9a45c;
+    border-radius: 0.4em;
+    box-shadow:
+        inset 0 0 1.2em rgba(201, 164, 92, 0.15),
+        0 0 1.5em rgba(201, 164, 92, 0.18);
+    text-shadow: 0 0 0.6em rgba(255, 215, 137, 0.35);
+}
+
+/* ---- Room description (parchment journal) ---- */
+
+.room-desc {
+    padding: 1.4em 1.6em;
+    background-color: #4a3d2c;
+    background-image: linear-gradient(180deg, #4f4231 0%, #443825 100%);
+    color: #f4e9d0;
+    border: 1px solid #6b5836;
+    border-left: 3px solid #c9a45c;
+    border-radius: 0.4em;
+    font-family: 'Lora', 'Georgia', 'Gill Sans', serif;
+    font-size: 1.08em;
+    line-height: 1.65;
+    font-style: italic;
+    box-shadow: inset 0 0 1.2em rgba(0, 0, 0, 0.25);
+}
+
+/* ---- In-room contents + special contents ---- */
+
+.room-contents,
+.special-room-contents {
+    padding: 0.4em 0.2em;
+    color: #e8dcb8;
+    font-size: 1.02em;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4em;
+}
+
+.special-room-contents:not(:empty) {
+    margin-top: 0.1em;
+}
+
+/* ---- Compass exits ---- */
+
+.exits-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.7em;
+    margin-top: 0.3em;
+}
+
+.middle-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45em;
+}
+
+.button {
+    background: linear-gradient(180deg, #4a3d2c 0%, #3a2f20 100%);
+    color: bisque;
+    border: 1px solid #8a7048;
+    border-radius: 0.35em;
+    height: 3.2em;
+    width: 11em;
+    font-family: inherit;
+    font-size: 1.05em;
+    font-weight: 600;
+    letter-spacing: 0.03em;
     cursor: pointer;
-    transition-duration: 0.4s;
+    transition: background-color 0.25s, border-color 0.25s, color 0.25s, box-shadow 0.25s, transform 0.1s;
+    box-shadow: inset 0 0 0.4em rgba(0,0,0,0.4);
 }
 
 .button:hover:enabled {
-    background-color: rgb(255, 210, 156);
+    background: linear-gradient(180deg, #5e4d36 0%, #483b27 100%);
+    color: #ffd789;
+    border-color: #c9a45c;
+    box-shadow:
+        inset 0 0 0.4em rgba(0,0,0,0.4),
+        0 0 0.8em rgba(201, 164, 92, 0.4);
+}
+
+.button:active:enabled {
+    transform: translateY(1px);
 }
 
 .button:disabled {
     cursor: default;
-    font-weight: normal;
+    color: #6e6353;
+    border-color: #4a3d2c;
+    background: #2d2620;
+    font-weight: 400;
+    opacity: 0.7;
 }
+
+/* ---- Lantern progress ---- */
+
+.lantern-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    margin-top: 0.2em;
+}
+
+.lantern-label {
+    font-size: 0.82em;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #c9a45c;
+    flex-shrink: 0;
+}
+
+.lantern-level {
+    flex: 1;
+    height: 0.9em;
+    border: 1px solid #6b5836;
+    border-radius: 0.25em;
+    background-color: #1a1610;
+    overflow: hidden;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.lantern-level::-webkit-progress-bar {
+    background-color: #1a1610;
+}
+
+.lantern-level::-webkit-progress-value {
+    background: linear-gradient(90deg, #6b3c0f 0%, #c9a45c 60%, #ffd789 100%);
+    box-shadow: 0 0 0.6em rgba(255, 200, 100, 0.45);
+    transition: width 0.4s ease;
+}
+
+.lantern-level::-moz-progress-bar {
+    background: linear-gradient(90deg, #6b3c0f 0%, #c9a45c 60%, #ffd789 100%);
+    box-shadow: 0 0 0.6em rgba(255, 200, 100, 0.45);
+}
+
+/* ---- Message area (recent action / event log) ---- */
+
+.message-area {
+    padding: 1.1em 1.3em;
+    min-height: 4.5em;
+    background-color: #3a3024;
+    color: #f4e9d0;
+    border: 1px dashed #8a7048;
+    border-radius: 0.35em;
+    font-size: 0.99em;
+    line-height: 1.6;
+}
+
+.message-area:empty::before {
+    content: "...";
+    color: #6e6353;
+    letter-spacing: 0.4em;
+}
+
+/* ---- Side panel: shared title style for inventory + quest log ---- */
+
+.panel-title {
+    margin: 0 0 0.6em 0;
+    font-size: 0.78em;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c9a45c;
+    border-bottom: 1px dashed #6b5836;
+    padding-bottom: 0.4em;
+}
+
+/* ---- Inventory (right sidebar section) ---- */
+
+.inventory-panel {
+    background-color: #3a3024;
+    border: 1px solid #6b5836;
+    border-top: 2px solid #c9a45c;
+    border-radius: 0.5em;
+    padding: 0.85em 1em 1em 1em;
+    box-shadow: 0 0.4em 1em rgba(0,0,0,0.35);
+}
+
+.inventory-contents {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+    color: #e8dcb8;
+    font-size: 0.95em;
+}
+
+.inventory-empty {
+    color: #b8a888;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+/* ---- Items / dropdown actions ---- */
 
 .room-item {
-    border-radius: 0.5em;
-  background-color: #d6d6d6;
-  color: black;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
+    background-color: #5a4830;
+    color: #f4e9d0;
+    border: 1px solid #8a7048;
+    border-radius: 0.35em;
+    padding: 0.45em 0.85em;
+    font-family: inherit;
+    font-size: 0.96em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.dropdown,  .dropdown-clicked{
-  position: relative;
-  display: inline-block;
+.room-item:hover {
+    background-color: #6e5a3c;
+    border-color: #c9a45c;
+    color: #ffd789;
+}
+
+.dropdown,
+.dropdown-clicked {
+    position: relative;
+    display: inline-block;
 }
 
 .dropdown-content {
-  border-radius: 0.5em;
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.25em;
+    min-width: 170px;
+    background-color: #2a241c;
+    border: 1px solid #c9a45c;
+    border-radius: 0.4em;
+    box-shadow: 0 0.6em 1.2em rgba(0,0,0,0.55);
+    z-index: 50;
+    padding: 0.25em;
+}
+
+.dropdown:hover .dropdown-content,
+.dropdown-clicked .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .room-item,
+.dropdown-clicked .room-item {
+    background-color: #6e5a3c;
+    border-color: #c9a45c;
+    color: #ffd789;
 }
 
 .dropdown-content button {
-  border-radius: 0.5em;
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  min-width: 160px;
-  border: none;
-  text-align: left;
+    display: block;
+    width: 100%;
+    background: transparent;
+    color: #f4e9d0;
+    border: none;
+    border-radius: 0.3em;
+    padding: 0.55em 0.8em;
+    font-family: inherit;
+    font-size: 0.95em;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
 }
 
+.dropdown-content button:hover {
+    background-color: #3d3220;
+    color: #ffd789;
+}
 
-.dropdown:hover .dropdown-content, .dropdown-clicked .dropdown-content {display: block;}
+.dropdown-content button.dropdown-nonaction,
+.dropdown-content button[disabled] {
+    color: #c9a45c;
+    font-size: 0.78em;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    cursor: default;
+    border-bottom: 1px solid #4a3d24;
+    margin-bottom: 0.2em;
+}
 
-.dropdown:hover .room-item, .dropdown-clicked .dropdown-content, .room-item:hover {background-color: #fee8a6;}
+.dropdown-content button.dropdown-nonaction:hover,
+.dropdown-content button[disabled]:hover {
+    background: transparent;
+}
 
-.dropdown-action:hover {background-color: #b4b4b4;}
+/* ================================================================
+   Music toggle (subtle ambient soundtrack control)
+   ================================================================ */
 
-.inventory-contents{
-    padding-top: 2em;
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 1.2em;
+.music-toggle {
+    position: fixed;
+    top: 1em;
+    left: 1em;
+    z-index: 950;
+    width: 2.4em;
+    height: 2.4em;
+    background-color: rgba(58, 48, 36, 0.9);
+    color: #c9a45c;
+    border: 1px solid #6b5836;
+    border-radius: 50%;
+    font-size: 1.15em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: color 0.2s, border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 0.4em rgba(0,0,0,0.5);
+}
+
+.music-toggle:hover {
+    color: #ffd789;
+    border-color: #c9a45c;
+    background-color: rgba(74, 61, 44, 0.95);
+    box-shadow: 0 0 0.7em rgba(201, 164, 92, 0.4);
+}
+
+.music-toggle.muted {
+    color: #6b5836;
+}
+
+.music-toggle.muted .music-toggle-icon::after {
+    content: " \00D7";
+    font-size: 0.8em;
+    color: #b85;
 }
 
 /* ================================================================
@@ -130,7 +424,8 @@
 .dialog-overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(8, 12, 8, 0.78);
+    background-color: rgba(15, 12, 8, 0.78);
+    backdrop-filter: blur(2px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -139,11 +434,11 @@
 }
 
 .dialog-box {
-    background-color: #1a1a1a;
+    background-color: #2d2620;
     color: #f4e9d0;
     border: 0.15em solid #c9a45c;
     border-radius: 0.6em;
-    box-shadow: 0 0 2em rgba(201, 164, 92, 0.35);
+    box-shadow: 0 0 2em rgba(201, 164, 92, 0.4);
     width: min(640px, 100%);
     max-height: 80vh;
     display: flex;
@@ -156,8 +451,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.75em 1em;
-    border-bottom: 1px solid #4a3d24;
-    background-color: #0f0f0f;
+    border-bottom: 1px solid #6b5836;
+    background-color: #1a1610;
     border-top-left-radius: 0.5em;
     border-top-right-radius: 0.5em;
 }
@@ -172,7 +467,7 @@
 .dialog-close {
     background: transparent;
     color: #f4e9d0;
-    border: 1px solid #4a3d24;
+    border: 1px solid #6b5836;
     border-radius: 0.3em;
     width: 1.8em;
     height: 1.8em;
@@ -182,7 +477,7 @@
 }
 
 .dialog-close:hover {
-    background-color: #2a2418;
+    background-color: #3d3220;
     color: #ffd789;
     border-color: #c9a45c;
 }
@@ -200,19 +495,19 @@
 
 .dialog-responses {
     padding: 0.5em 1em 1em 1em;
-    border-top: 1px solid #4a3d24;
+    border-top: 1px solid #6b5836;
     display: flex;
     flex-direction: column;
     gap: 0.4em;
-    background-color: #131311;
+    background-color: #261f17;
     border-bottom-left-radius: 0.5em;
     border-bottom-right-radius: 0.5em;
 }
 
 .dialog-choice-btn {
-    background-color: #2a2418;
+    background-color: #3d3220;
     color: #f4e9d0;
-    border: 1px solid #6b5836;
+    border: 1px solid #8a7048;
     border-radius: 0.35em;
     padding: 0.7em 0.9em;
     font-size: 1em;
@@ -226,7 +521,7 @@
 }
 
 .dialog-choice-btn:hover {
-    background-color: #3d3220;
+    background-color: #54442d;
     border-color: #c9a45c;
     color: #ffd789;
 }
@@ -263,9 +558,9 @@
     padding: 0.6em 0.75em;
     font-size: 1em;
     font-family: inherit;
-    background-color: #0d0d0d;
+    background-color: #1a1610;
     color: #f4e9d0;
-    border: 1px solid #6b5836;
+    border: 1px solid #8a7048;
     border-radius: 0.35em;
 }
 
@@ -277,7 +572,7 @@
 
 .dialog-submit-btn {
     background-color: #c9a45c;
-    color: #1a1a1a;
+    color: #1a1610;
     border: none;
     border-radius: 0.35em;
     padding: 0.6em 1.2em;
@@ -298,16 +593,12 @@
    ================================================================ */
 
 .quest-log {
-    position: fixed;
-    top: 1em;
-    right: 1em;
-    width: 280px;
-    background-color: #1a1a1a;
+    background-color: #3a3024;
     color: #f4e9d0;
-    border: 0.12em solid #c9a45c;
+    border: 1px solid #6b5836;
+    border-top: 2px solid #c9a45c;
     border-radius: 0.5em;
-    box-shadow: 0 0.4em 1.2em rgba(0, 0, 0, 0.45);
-    z-index: 900;
+    box-shadow: 0 0.4em 1em rgba(0, 0, 0, 0.35);
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 0.95em;
 }
@@ -316,23 +607,25 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5em 0.75em;
-    border-bottom: 1px solid #4a3d24;
-    background-color: #0f0f0f;
+    padding: 0.55em 0.85em;
+    border-bottom: 1px dashed #6b5836;
+    background-color: #2a241c;
     border-top-left-radius: 0.4em;
     border-top-right-radius: 0.4em;
 }
 
 .quest-log-title {
-    font-weight: bold;
-    color: #ffd789;
-    letter-spacing: 0.05em;
+    font-size: 0.78em;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c9a45c;
 }
 
 .quest-log-toggle {
     background: transparent;
     color: #f4e9d0;
-    border: 1px solid #4a3d24;
+    border: 1px solid #6b5836;
     border-radius: 0.3em;
     width: 1.7em;
     height: 1.7em;
@@ -342,14 +635,14 @@
 }
 
 .quest-log-toggle:hover {
-    background-color: #2a2418;
+    background-color: #3d3220;
     color: #ffd789;
     border-color: #c9a45c;
 }
 
 .quest-log-body {
-    padding: 0.6em 0.75em;
-    max-height: 60vh;
+    padding: 0.6em 0.85em;
+    max-height: 55vh;
     overflow-y: auto;
 }
 
@@ -358,17 +651,17 @@
 }
 
 .quest-log-empty {
-    color: #888;
+    color: #b8a888;
     font-style: italic;
     font-size: 0.9em;
 }
 
 .quest-log-section {
-    font-size: 0.75em;
+    font-size: 0.72em;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     color: #c9a45c;
-    margin: 0.5em 0 0.3em 0;
+    margin: 0.6em 0 0.3em 0;
     border-bottom: 1px dashed #4a3d24;
     padding-bottom: 0.2em;
 }
@@ -379,7 +672,7 @@
 
 .quest-entry {
     padding: 0.5em 0;
-    border-bottom: 1px dashed #2a2418;
+    border-bottom: 1px dashed #4a3d24;
 }
 
 .quest-entry:last-child {
@@ -399,55 +692,22 @@
 }
 
 .quest-entry-complete .quest-entry-title {
-    color: #6b6b6b;
+    color: #8e8270;
     text-decoration: line-through;
 }
 
 .quest-entry-complete .quest-entry-stage {
-    color: #555;
+    color: #6e6353;
 }
 
-/* ================================================================
-   Dev demo bar (test trigger for the dialog/quest systems)
-   ================================================================ */
+/* Responsive: stack sidebar below main on narrow screens. */
 
-.dev-demo-bar {
-    margin-top: 2em;
-    padding: 0.75em 1em;
-    background-color: #1a1a1a;
-    color: #f4e9d0;
-    border: 1px dashed #6b5836;
-    border-radius: 0.4em;
-    display: flex;
-    align-items: center;
-    gap: 0.75em;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-.dev-demo-label {
-    font-size: 0.75em;
-    font-weight: bold;
-    color: #c9a45c;
-    letter-spacing: 0.1em;
-}
-
-.dev-demo-btn {
-    background-color: #2a2418;
-    color: #f4e9d0;
-    border: 1px solid #6b5836;
-    border-radius: 0.35em;
-    padding: 0.5em 1em;
-    font-size: 0.95em;
-    font-family: inherit;
-    cursor: pointer;
-}
-
-.dev-demo-btn:hover {
-    background-color: #3d3220;
-    border-color: #c9a45c;
-    color: #ffd789;
-}
-
-.dev-demo-btn-secondary {
-    background-color: transparent;
+@media (max-width: 960px) {
+    body {
+        justify-content: flex-start;
+    }
+    .page-grid {
+        grid-template-columns: 1fr;
+        padding: 4em 1em 2em 1em; /* top padding clears the music toggle */
+    }
 }
