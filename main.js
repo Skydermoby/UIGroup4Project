@@ -879,14 +879,10 @@ init().then(setupDialogAndQuestSystems).catch(function (err) {
 
 // FOR SHRESTA: Put all your dialog here, thx
 
-// Long-Necked Man dialogue (Miro flow nodes 1-12).
-// Personality: eerie but cordial; calm voice that suggests he might
-// grab and eat the player at any moment. Player responses are
-// nervous and overly cooperative.
 const Diag1  = "Oh... hello there, little wanderer. How wonderful of you to find your way to my clearing. Such a quaint, tender thing you are. Tell me... what brings you to my company?";
 const Diag2  = "W-where... where am I, exactly?";
 const Diag3  = "Please. I just need to know how to leave this place.";
-const Diag4  = "You stand in Cusclectown, little one. A place your kind might call... a nightmare. Such a small, quaint word for somewhere so very vast.";
+const Diag4  = "You stand in the Upsidedown, little one. A place your kind might call... a nightmare. Such a small, quaint word for somewhere so very vast.";
 const Diag5  = "To leave, you must cross the great river to the north. But the river... it does not part for free, you see. A favor is asked of every traveler. Something given. Something taken.";
 const Diag6  = "A-anything! Just tell me what you need!";
 const Diag7  = "How agreeable of you. As it happens, I find myself... peckish. There is an orchard just past the campfire, where one fine apple still grows. Bring it to me. Oh, but the gate is locked tight, and the key was lost long ago. Among the playthings, I think. The playground. Yes. Bring me the apple, little one. I will be waiting. Patiently. Always patiently.";
@@ -895,15 +891,13 @@ const Diag9  = "N-not yet. I'm still looking. Just a little more time, please.";
 const Diag10 = "Yes. Yes, here it is. The apple. Please... take it.";
 const Diag11 = "Of course, of course. Take all the time you need, little one. I have... so very much of it. I shall be here when you return. Always here.";
 const Diag12 = "Oh. Oh, how splendid. How perfectly, beautifully ripe. A bargain is a bargain, little wanderer. As promised. Here. A diving suit. The river will let you pass, in this. Off you go now. Safe travels. Safe travels indeed.";
-
-// Apple Tree dialogue (Diag13-Diag19) - left for Shresta to fill in.
-const Diag13 = "Placeholder13"
-const Diag14 = "Placeholder14"
-const Diag15 = "Placeholder15"
-const Diag16 = "Placeholder16"
-const Diag17 = "Placeholder17"
-const Diag18 = "Placeholder18"
-const Diag19 = "Placeholder19"
+const Diag13 = "Oh goody what have we here? I think I see someone with too much to bear! Answer some riddles I'm sure you can handle, and in return I'll give you an apple!"
+const Diag14 = "Wait, why do you want riddles?"
+const Diag15 = "Oh uh, I guess I can answer some riddles"
+const Diag16 = "Knowledge is my power! My dear young friend! It will help you always until the end."
+const Diag17 = "Yes that's correct horray for you, but don't celebrate yet, prepare for round two!"
+const Diag18 = "Oh fnatastic I couldn't have asked for more, keep that train going cuz this ain't a bore"
+const Diag19 = "Oh joyous fantastic this is wonderful news, you've proven you're worthy of this honeydew, so go on your way wish a smile and buck, I sincerely with you the best of luck"
 
 //End of dialog storage
 
@@ -913,8 +907,8 @@ const RIDDLE_QUEST_ID = "Riddle";
 function defineTutorialQuest() {
     world.quests.defineQuest({
         id: TUTORIAL_QUEST_ID,
-        title: "Tutorial",
-        description: "Basics",
+        title: "Awakening",
+        description: "You wake in the dark before a locked door. Find a way out.",
         stages: [
             { id: "find_light",           description: "It's dark, find a light source" },
             { id: "find_key",    description: "Find a key to get out the cabin" },
